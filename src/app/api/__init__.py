@@ -1,1 +1,1 @@
-from src.app.api.endpoints import router
+from src.app.api.endpoints import auth_router, transaction_router
