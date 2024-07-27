@@ -1,0 +1,8 @@
+service:
+  host: "localhost"
+  port: 8000
+  debug: True
+base_url:
+  auth_service: "http://127.0.0.1:8001/"
+  transaction_service: "http://127.0.0.1:8002/"
+  face_verification: "http://127.0.0.1:8003/"

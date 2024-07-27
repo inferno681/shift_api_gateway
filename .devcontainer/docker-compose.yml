@@ -1,0 +1,17 @@
+services:
+  app:
+    container_name: 'transaction_service_stakrotckii'
+    build:
+      context: app/
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+    ports:
+      - '28087:8080'
+    command: sleep infinity
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - PYTHONPATH=/workspace/src
