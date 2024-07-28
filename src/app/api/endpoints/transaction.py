@@ -31,7 +31,11 @@ async def create_transaction(
     return response.json()
 
 
-@router.post(CREATE_REPORT_LINK, response_model=TransactionReport)
+@router.post(
+    CREATE_REPORT_LINK,
+    response_model=TransactionReport,
+    response_model_exclude={'user_id'},
+)
 async def create_report(
     report_data: TransactionReportCreate,
     client: AsyncClient = Depends(get_client_transaction),
