@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
-from httpx import AsyncClient
 from fastapi.encoders import jsonable_encoder
+from httpx import AsyncClient
+
 from app.api.schemes import (
     Transaction,
     TransactionCreate,
@@ -16,7 +17,7 @@ router = APIRouter()
 @router.post(
     CREATE_TRANSACTION_LINK,
     response_model=Transaction,
-    response_model_exclude=['user_id'],
+    response_model_exclude={'user_id'},
 )
 async def create_transaction(
     transaction: TransactionCreate,

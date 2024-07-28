@@ -5,16 +5,16 @@ from app.api import service_router
 from config import config
 
 tags_metadata = [
-    config.auth_service.tags_metadata,
-    config.transaction_service.tags_metadata,
-    config.face_verification.tags_metadata,
+    config.auth_service.tags_metadata,  # type: ignore
+    config.transaction_service.tags_metadata,  # type: ignore
+    config.face_verification.tags_metadata,  # type: ignore
 ]
 
 app = FastAPI(
-    title=config.service.title,
-    description=config.service.description,
+    title=config.service.title,  # type: ignore
+    description=config.service.description,  # type: ignore
     openapi_tags=tags_metadata,
-    debug=config.service.debug,
+    debug=config.service.debug,  # type: ignore
 )  # type: ignore
 
 app.include_router(service_router, prefix='/api')

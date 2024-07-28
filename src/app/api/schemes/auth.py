@@ -28,9 +28,3 @@ class UserTokenCheck(BaseModel):
 
     user_id: PositiveInt | None = None
     is_token_valid: bool
-
-
-class UserTokenCheckRequest(BaseModel):
-    """Схема передачи токена для проверки."""
-
-    token: str

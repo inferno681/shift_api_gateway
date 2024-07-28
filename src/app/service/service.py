@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyHeader
 from httpx import AsyncClient
 
-from app.api.schemes import UserTokenCheck, UserTokenCheckRequest
+from app.api.schemes import UserTokenCheck
 from app.constants import (
     CHECK_TOKEN_LINK,
     INVALID_TOKEN_MESSAGE,
@@ -40,10 +40,9 @@ async def get_client_auth():
 async def check_token(
     token: str = Depends(header_scheme),
     client: AsyncClient = Depends(get_client_auth),
-) -> int:
+) -> int | None:
     """Проверка токена пользователя."""
-    token = UserTokenCheckRequest(token=token)
-    response = await client.post(CHECK_TOKEN_LINK, json=token.model_dump())
+    response = await client.post(CHECK_TOKEN_LINK, json={'token': token})
     response_data = response.json()
     if response.status_code == status.HTTP_400_BAD_REQUEST and (
         response_data.get('detail') == INVALID_TOKEN_MESSAGE

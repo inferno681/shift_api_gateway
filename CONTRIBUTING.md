@@ -19,7 +19,7 @@
 
 - Клонируйте репозиторий и перейдите в него.
 ```bash
-git clone git@hub.mos.ru:shift-python/y2024/homeworks/vstakrotskij/transaction_service.git
+git clone git@hub.mos.ru:shift-python/y2024/homeworks/vstakrotskij/api_gateway.git
 ```
 - Создайте файл .env, в корневой папке проекта, с переменными окружения.
 ```
