@@ -1,9 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 
 
 class FaceVerificationRequest(BaseModel):
     """Схема запроса для формирования вектора."""
 
+    user_id: PositiveInt
     link: str
 
 

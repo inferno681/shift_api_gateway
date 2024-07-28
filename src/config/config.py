@@ -9,7 +9,9 @@ class _SettingsModel(BaseSettings):
 
     @classmethod
     def from_yaml(cls, config_path: str) -> '_SettingsModel':
-        return cls(**yaml.safe_load(Path(config_path).read_text()))
+        return cls(
+            **yaml.safe_load(Path(config_path).read_text(encoding='utf-8')),
+        )
 
     model_config = SettingsConfigDict(
         case_sensitive=False,
@@ -31,24 +33,41 @@ class _SettingsModel(BaseSettings):
 class _ServiceSettings(_SettingsModel):
     """Валидация настроек сервиса из файла YAML."""
 
+    title: str
+    description: str
     host: str
     port: int
     debug: bool
 
 
-class _BaseURLSettings(_SettingsModel):
-    """Валидация настроек базовых ссылок из файла YAML."""
+class _AuthSettings(_SettingsModel):
+    """Валидация настроек настроек сервиса авторизации."""
 
-    face_verification: str
-    auth_service: str
-    transaction_service: str
+    base_url: str
+    tags_metadata: dict[str, str]
+
+
+class _TransactionSettings(_SettingsModel):
+    """Валидация настроек настроек сервиса транзакций."""
+
+    base_url: str
+    tags_metadata: dict[str, str]
+
+
+class _FaceVerificationSettings(_SettingsModel):
+    """Валидация настроек настроек сервиса верификации."""
+
+    base_url: str
+    tags_metadata: dict[str, str]
 
 
 class Settings(_SettingsModel):
     """Настройки сервиса."""
 
     service: _ServiceSettings
-    base_url: _BaseURLSettings
+    auth_service: _AuthSettings
+    transaction_service: _TransactionSettings
+    face_verification: _FaceVerificationSettings
 
 
 config = Settings.from_yaml('./src/config/config.yaml')

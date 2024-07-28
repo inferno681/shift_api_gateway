@@ -1,13 +1,23 @@
 import uvicorn
 from fastapi import FastAPI
 
-from src.app.api import auth_router, transaction_router
+from src.app.api import service_router
 from src.config import config
 
-app = FastAPI(debug=config.service.debug)  # type: ignore
+tags_metadata = [
+    config.auth_service.tags_metadata,
+    config.transaction_service.tags_metadata,
+    config.face_verification.tags_metadata,
+]
 
-app.include_router(auth_router)
-app.include_router(transaction_router)
+app = FastAPI(
+    title=config.service.title,
+    description=config.service.description,
+    openapi_tags=tags_metadata,
+    debug=config.service.debug,
+)  # type: ignore
+
+app.include_router(service_router, prefix='/api')
 
 if __name__ == '__main__':
     uvicorn.run(
