@@ -6,19 +6,19 @@ service:
   debug: True
 
 auth_service:
-  base_url: "http://127.0.0.1:8001/"
+  base_url: "http://127.0.0.1:8001/api/"
   tags_metadata:
     name: "Auth service"
     description: "Сервис авторизации"
 
 transaction_service:
-  base_url: "http://127.0.0.1:8002/"
+  base_url: "http://127.0.0.1:8002/api/"
   tags_metadata:
     name: "Transaction service"
     description: "Сервис транзакций"
 
 face_verification:
-  base_url: "http://127.0.0.1:8003/"
+  base_url: "http://127.0.0.1:8003/api/"
   tags_metadata:
     name: "Face verification service"
     description: "Сервис верификации"
