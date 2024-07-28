@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
-from src.app.api.endpoints.auth import router as auth_router
-from src.app.api.endpoints.transaction import router as transaction_router
-from src.app.api.endpoints.face_verification import (
+from app.api.endpoints.auth import router as auth_router
+from app.api.endpoints.transaction import router as transaction_router
+from app.api.endpoints.face_verification import (
     router as face_verification_router,
 )
-from src.config import config
+from config import config
 
 router = APIRouter()
 

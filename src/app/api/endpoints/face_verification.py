@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends
 from httpx import AsyncClient
 
-from src.app.api.schemes import (
+from app.api.schemes import (
     FaceVerificationRequest,
     FaceVerificationResponse,
 )
-from src.app.constants import EMBEDDING_LINK
-from src.app.service import check_token, get_client_face_verification
+from app.constants import EMBEDDING_LINK
+from app.service import check_token, get_client_face_verification
 
 router = APIRouter()
 

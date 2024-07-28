@@ -2,13 +2,13 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyHeader
 from httpx import AsyncClient
 
-from src.app.api.schemes import UserTokenCheck, UserTokenCheckRequest
-from src.app.constants import (
+from app.api.schemes import UserTokenCheck, UserTokenCheckRequest
+from app.constants import (
     CHECK_TOKEN_LINK,
     INVALID_TOKEN_MESSAGE,
     TOKEN_EXPIRED_MESSAGE,
 )
-from src.config import config
+from config import config
 
 header_scheme = APIKeyHeader(name='Authorization')
 

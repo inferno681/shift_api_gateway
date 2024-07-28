@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from httpx import AsyncClient
 
-from src.app.api.schemes import UserCreate, UserToken
-from src.app.constants import AUTH_LINK, REGISTRATION_LINK
-from src.app.service import get_client_auth
+from app.api.schemes import UserCreate, UserToken
+from app.constants import AUTH_LINK, REGISTRATION_LINK
+from app.service import get_client_auth
 
 router = APIRouter()
 

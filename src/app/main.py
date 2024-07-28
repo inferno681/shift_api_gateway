@@ -1,8 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
 
-from src.app.api import service_router
-from src.config import config
+from app.api import service_router
+from config import config
 
 tags_metadata = [
     config.auth_service.tags_metadata,

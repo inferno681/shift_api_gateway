@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends
 from httpx import AsyncClient
 from fastapi.encoders import jsonable_encoder
-from src.app.api.schemes import (
+from app.api.schemes import (
     Transaction,
     TransactionCreate,
     TransactionReport,
     TransactionReportCreate,
 )
-from src.app.constants import CREATE_REPORT_LINK, CREATE_TRANSACTION_LINK
-from src.app.service import check_token, get_client_transaction
+from app.constants import CREATE_REPORT_LINK, CREATE_TRANSACTION_LINK
+from app.service import check_token, get_client_transaction
 
 router = APIRouter()
 
