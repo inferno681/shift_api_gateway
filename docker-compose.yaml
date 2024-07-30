@@ -1,0 +1,19 @@
+services:
+
+  auth_service:
+    image: inferno681/auth_service:latest
+
+  transaction_service:
+    image: inferno681/transaction_service:latest
+
+  face_verification_service:
+    image: inferno681/face_verification_service:latest
+
+  api_gateway:
+    image: inferno681/api_gateway:latest
+    ports:
+      - "8000:8000"
+    depends_on:
+      - auth_service
+      - transaction_service
+      - face_verification_service
