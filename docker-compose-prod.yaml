@@ -1,16 +1,16 @@
 services:
 
   auth_service:
-    build: ./auth_service
+    image: inferno681/auth_service:latest
 
   transaction_service:
-    build: ./transaction_service
+    image: inferno681/transaction_service:latest
 
   face_verification_service:
-    build: ./face_verification_service
+    image: inferno681/face_verification_service:latest
 
   api_gateway:
-    build: .
+    image: inferno681/api_gateway:latest
     ports:
       - "8000:8000"
     depends_on:
