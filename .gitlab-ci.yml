@@ -66,7 +66,7 @@ pre_commit:
 coverage:
   stage: coverage
   script:
-    - poetry run pytest --cov --cov-report term --cov-report xml:coverage.xml --ignore=src/tests/integration
+    - poetry run pytest --ignore=src/tests/integration --cov --cov-report term --cov-report xml:coverage.xml
   coverage: '/TOTAL.*\s+(\d+%)$/'
   artifacts:
     reports:
