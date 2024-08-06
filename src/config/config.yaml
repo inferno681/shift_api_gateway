@@ -1,7 +1,7 @@
 service:
   title: "API Gateway"
   description: "Единая точка входа в несколько сервисов."
-  host: "localhost"
+  host: "0.0.0.0"
   port: 8000
   debug: True
 
