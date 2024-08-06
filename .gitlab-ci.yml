@@ -44,9 +44,17 @@ mypy:
 test:
   stage: test
   script:
-    - poetry run pytest --cov
+    - poetry run pytest --cov  --ignore=src/tests/integration
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "merge_request_event"
+
+test_with_integration:
+  stage: test
+  services:
+    - docker:dind
+  script:
+    - docker compose -f .\docker-compose-test.yaml up
+    - poetry run pytest --cov
 
 pre_commit:
   stage: pre_commit
