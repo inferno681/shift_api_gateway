@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
-from httpx import AsyncClient
 from fastapi.responses import JSONResponse
+from httpx import AsyncClient
 
 from app.api.schemes import (
+    ErrorSchema,
     FaceVerificationRequest,
     FaceVerificationResponse,
-    ErrorSchema,
 )
 from app.constants import EMBEDDING_LINK
 from app.service import check_token, get_client_face_verification

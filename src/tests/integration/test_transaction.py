@@ -1,6 +1,7 @@
 from decimal import Decimal
-from fastapi import status
+
 import pytest
+from fastapi import status
 
 
 @pytest.mark.anyio
