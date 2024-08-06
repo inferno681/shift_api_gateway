@@ -1,7 +1,8 @@
-import pytest
-from datetime import datetime, timedelta, UTC
-from httpx import ASGITransport, AsyncClient
 import asyncio
+from datetime import UTC, datetime, timedelta
+
+import pytest
+from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 
