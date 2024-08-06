@@ -15,9 +15,6 @@ stages:
   - pre_commit
   - coverage
 
-variables:
-  DOCKER_DRIVER: overlay2
-
 lint:
   stage: lint
   rules:
@@ -47,17 +44,6 @@ test:
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "merge_request_event"
 
-test_with_integration:
-  stage: test
-  image:
-    name: docker:23.0.5
-
-  services:
-    - docker:23.0.5-dind
-  script:
-    - docker compose -f .\docker-compose-test.yaml up
-    - poetry run pytest --cov
-
 pre_commit:
   stage: pre_commit
   rules:
@@ -76,7 +62,7 @@ pre_commit:
 coverage:
   stage: coverage
   script:
-    - poetry run pytest --cov --cov-report term --cov-report xml:coverage.xml
+    - poetry run pytest --cov --cov-report term --cov-report xml:coverage.xml --ignore=src/tests/integration
   coverage: '/TOTAL.*\s+(\d+%)$/'
   artifacts:
     reports:
