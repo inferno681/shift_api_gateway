@@ -28,23 +28,20 @@ services:
   auth_service:
     build: ./auth_service
     depends_on:
-            - kafka
-            - zookeeper
-
+      - kafka
+      - zookeeper
 
   transaction_service:
     build: ./transaction_service
     depends_on:
-            - kafka
-            - zookeeper
-
+      - kafka
+      - zookeeper
 
   face_verification_service:
     build: ./face_verification_service
     depends_on:
-            - kafka
-            - zookeeper
-
+      - kafka
+      - zookeeper
 
   api_gateway:
     build: .

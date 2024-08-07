@@ -121,8 +121,3 @@ dmypy.json
 
 helm/*/requirements.lock
 helm/*/charts
-
-#submodules
-/auth_service
-/face_verification_service
-/transaction_service

@@ -6,19 +6,19 @@ service:
   debug: True
 
 auth_service:
-  base_url: "http://auth_service/api/"
+  base_url: "http://auth_service:8000/api/"
   tags_metadata:
     name: "Auth service"
     description: "Сервис авторизации"
 
 transaction_service:
-  base_url: "http://transaction_service/api/"
+  base_url: "http://transaction_service:8000/api/"
   tags_metadata:
     name: "Transaction service"
     description: "Сервис транзакций"
 
 face_verification:
-  base_url: "http://face_verification_service/api/"
+  base_url: "http://face_verification_service:8000/api/"
   tags_metadata:
     name: "Face verification service"
     description: "Сервис верификации"
