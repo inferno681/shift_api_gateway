@@ -133,3 +133,9 @@ def one_face_data():
 def many_faces_data():
     """Фикстура с некорректным изображением."""
     return {'link': 'src/tests/images/many_faces.jpg'}
+
+
+@pytest.fixture
+def check_health_link():
+    """Фикстура со ссылкой на проверку готовности сервиса."""
+    return '/healthz/ready'

@@ -14,3 +14,8 @@ EMBEDDING_LINK = '/face_embedding'
 """Сообщения об ошибках"""
 INVALID_TOKEN_MESSAGE = 'Недействительный токен'
 TOKEN_EXPIRED_MESSAGE = 'Срок действия токена истек'
+SERVICE_UNAVAILABLE = 'Следующие сервисы не доступны: {services}'
+
+
+"""Общие ссылки."""
+HEALTH_LINK = '/healthz/ready'

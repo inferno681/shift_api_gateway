@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.api.endpoints.auth import router as auth_router
 from app.api.endpoints.face_verification import \
     router as face_verification_router
+from app.api.endpoints.health import router as health_router
 from app.api.endpoints.transaction import router as transaction_router
 from config import config
 
@@ -22,4 +23,9 @@ router.include_router(
     face_verification_router,
     prefix='/face_verification',
     tags=[config.face_verification.tags_metadata['name']],  # type: ignore
+)
+
+router.include_router(
+    health_router,
+    tags=[config.service.tags_metadata_health['name']],  # type: ignore
 )
