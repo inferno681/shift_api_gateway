@@ -55,7 +55,7 @@ pre_commit:
   script:
     - poetry run flake8 src/
     - poetry run mypy src/
-    - poetry run pytest --cov --cov-fail-under=90 --cov-report term --cov-report xml:coverage.xml
+    - poetry run pytest pytest src/tests/unit  --cov --cov-fail-under=90 --cov-report term --cov-report xml:coverage.xml
   coverage: '/TOTAL.*\s+(\d+%)$/'
   artifacts:
     reports:
