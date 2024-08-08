@@ -282,3 +282,31 @@ def mock_post_many_faces_response():
         json={'user_id': 1, 'is_token_valid': True, 'detail': 'some_error'},
     )
     return mock_post
+
+
+@pytest.fixture
+def check_health_link():
+    """Фикстура со ссылкой на проверку готовности сервиса."""
+    return '/healthz/ready'
+
+
+@pytest.fixture
+def mock_get_health():
+    """Фикстура с положительным ответом о готовности сервисов."""
+    mock_get = AsyncMock()
+    mock_get.return_value = Response(
+        status.HTTP_200_OK,
+        json={'is_ready': True},
+    )
+    return mock_get
+
+
+@pytest.fixture
+def mock_get_unhealth():
+    """Фикстура с отрицательным ответом о готовности сервисов."""
+    mock_get = AsyncMock()
+    mock_get.return_value = Response(
+        status.HTTP_503_SERVICE_UNAVAILABLE,
+        json={'detail': 'detail'},
+    )
+    return mock_get
