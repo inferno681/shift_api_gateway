@@ -3,6 +3,7 @@
 REGISTRATION_LINK = '/registration'
 AUTH_LINK = '/auth'
 CHECK_TOKEN_LINK = '/check_token'
+PHOTO_UPLOAD_LINK = '/verify'
 
 """Ссылки для transaction_service."""
 CREATE_TRANSACTION_LINK = '/create_transaction'
@@ -15,7 +16,11 @@ EMBEDDING_LINK = '/face_embedding'
 INVALID_TOKEN_MESSAGE = 'Недействительный токен'
 TOKEN_EXPIRED_MESSAGE = 'Срок действия токена истек'
 SERVICE_UNAVAILABLE = 'Следующие сервисы не доступны: {services}'
+FILENAME_ERROR = 'Имя файла слищком короткое или файл не имеет расширения'
 
 
 """Общие ссылки."""
 HEALTH_LINK = '/healthz/ready'
+
+"""Текст для ответов."""
+KAFKA_RESPONSE = 'Сообщение принято в обработку'

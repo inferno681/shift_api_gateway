@@ -1,4 +1,9 @@
-from app.api.schemes.auth import UserCreate, UserToken, UserTokenCheck
+from app.api.schemes.auth import (
+    KafkaResponse,
+    UserCreate,
+    UserToken,
+    UserTokenCheck,
+)
 from app.api.schemes.face_verification import (
     FaceVerificationRequest,
     FaceVerificationResponse,
