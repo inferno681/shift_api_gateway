@@ -1,3 +1,6 @@
+volumes:
+  photo_storage:
+
 services:
 
   zookeeper:
@@ -31,6 +34,8 @@ services:
     depends_on:
       - kafka
       - zookeeper
+    volumes:
+      - photo_storage:/app/photos
 
   transaction_service:
     build: ./transaction_service
@@ -43,6 +48,8 @@ services:
     depends_on:
       - kafka
       - zookeeper
+    volumes:
+      - photo_storage:/app/photos
 
   api_gateway:
     build: .
