@@ -28,12 +28,19 @@ services:
        - KAFKA_CREATE_TOPICS= "faces:3:1"
     depends_on:
        - zookeeper
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   auth_service:
     build: ./auth_service
     depends_on:
-      - kafka
-      - zookeeper
+      kafka:
+        condition: service_healthy
+      zookeeper:
+        condition: service_started
     volumes:
       - photo_storage:/app/photos
 
@@ -46,8 +53,10 @@ services:
   face_verification_service:
     build: ./face_verification_service
     depends_on:
-      - kafka
-      - zookeeper
+      kafka:
+        condition: service_healthy
+      zookeeper:
+        condition: service_started
     volumes:
       - photo_storage:/app/photos
 
