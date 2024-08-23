@@ -9,15 +9,10 @@
 .docker_base:
   image: docker:dind
   before_script:
-    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - ssh-keyscan hub.mos.ru >> ~/.ssh/known_hosts
+    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@hub.mos.ru/".insteadOf "https://hub.mos.ru/"
     - git submodule sync
-    - git submodule update --init --recursive
-      - docker compose -f docker-compose-test.yaml up -d --build
+    - git submodule update --init --recursive --remote
+    - docker compose -f docker-compose-test.yaml up -d --build
   after_script:
     - docker compose -f docker-compose-test.yaml down
   retry: 2
