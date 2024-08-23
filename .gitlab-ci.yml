@@ -13,6 +13,7 @@
     - git submodule sync
     - git submodule update --init --recursive --remote
     - docker compose -f docker-compose-test.yaml up -d --build
+    - sleep 15
   after_script:
     - docker compose -f docker-compose-test.yaml down
   retry: 2

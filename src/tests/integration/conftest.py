@@ -2,6 +2,7 @@ import asyncio
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from asgi_lifespan import LifespanManager
 from httpx import ASGITransport, AsyncClient
 
 from app.main import app
@@ -16,11 +17,12 @@ def anyio_backend():
 @pytest.fixture
 async def client():
     """Фикстура клиента для подключения к тестовому серверу."""
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url='http://127.0.0.1:8000/api/',
-    ) as client:
-        yield client
+    async with LifespanManager(app):
+        async with AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url='http://127.0.0.1:8000/api/',
+        ) as client:
+            yield client
 
 
 @pytest.fixture
