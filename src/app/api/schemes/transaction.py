@@ -1,5 +1,4 @@
 from datetime import datetime
-from decimal import Decimal
 from enum import Enum
 
 from pydantic import BaseModel, PositiveFloat, PositiveInt
@@ -39,5 +38,5 @@ class TransactionReport(TransactionReportCreate):
 
     user_id: PositiveInt
     transactions: list[TransactionType] | list
-    debit: Decimal
-    credit: Decimal
+    debit: int
+    credit: int

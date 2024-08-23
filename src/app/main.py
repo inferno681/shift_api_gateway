@@ -7,7 +7,6 @@ from config import config
 tags_metadata = [
     config.auth_service.tags_metadata,  # type: ignore
     config.transaction_service.tags_metadata,  # type: ignore
-    config.face_verification.tags_metadata,  # type: ignore
 ]
 
 app = FastAPI(

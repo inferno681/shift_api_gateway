@@ -139,3 +139,9 @@ def many_faces_data():
 def check_health_link():
     """Фикстура со ссылкой на проверку готовности сервиса."""
     return '/healthz/ready'
+
+
+@pytest.fixture
+def verify_link():
+    """Фикстура со ссылкой для загрузки фото."""
+    return '/healthz/ready'

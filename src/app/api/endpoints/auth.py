@@ -63,9 +63,10 @@ async def verify(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=FILENAME_ERROR,
         )
+    file_bytes = await file.read()
     await client.post(
         PHOTO_UPLOAD_LINK,
         data={'user_id': user_id},
-        files={'file': (file.filename, file.file)},
+        files={'file': (file.filename, file_bytes, file.content_type)},
     )
     return KafkaResponse

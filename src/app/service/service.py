@@ -9,14 +9,6 @@ from config import config
 header_scheme = APIKeyHeader(name='Authorization')
 
 
-async def get_client_face_verification():
-    """Клиент для запросов к face_verification_service."""
-    async with AsyncClient(
-        base_url=config.face_verification.base_url,
-    ) as client:
-        yield client
-
-
 async def get_client_transaction():
     """Клиент для запросов к transaction_service."""
     async with AsyncClient(
