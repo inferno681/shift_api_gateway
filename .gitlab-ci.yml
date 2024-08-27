@@ -9,11 +9,7 @@
 .docker_base:
   image: docker:dind
   before_script:
-    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@hub.mos.ru/".insteadOf "https://hub.mos.ru/"
-    - git submodule sync
-    - git submodule update --init --recursive --remote
     - docker compose -f docker-compose-test.yaml up -d --build
-    - sleep 15
   after_script:
     - docker compose -f docker-compose-test.yaml down
   retry: 2
@@ -26,6 +22,7 @@ stages:
   - test
   - pre_commit
   - coverage
+  - other_registry_build
   - build
 
 lint:
@@ -51,6 +48,7 @@ mypy:
         compare_to: "main"
   script:
     - poetry run mypy src/
+  retry: 2
 
 test:
   stage: test
@@ -105,3 +103,18 @@ build_and_push_to_docker_hub:
     - docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest --push .
   only:
     - main
+
+other_registry_build:
+  stage: other_registry_build
+  before_script:
+    - export DOCKER_CONFIG="$(mktemp -d)/"
+    - echo -e $DOCKER_AUTH_CONFIG > $DOCKER_CONFIG/config.json
+  script:
+    - docker build -t ${CI_REGISTRY}/$IMAGE_NAME:latest .
+    - docker push ${CI_REGISTRY}/$IMAGE_NAME:latest
+  after_script:
+    - rm -f $DOCKER_CONFIG
+    - unset DOCKER_CONFIG
+  tags:
+    - shell
+  allow_failure: true
