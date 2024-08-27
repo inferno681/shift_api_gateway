@@ -13,12 +13,6 @@ spec:
         - name: api-gateway-config-volume
           mountPath: /app/src/config/config.yaml
           subPath: config.yaml
-      env:
-        - name: db_password
-          valueFrom:
-            secretKeyRef:
-              name: stakrotckii-api-gateway-secret
-              key: db_password
       ports:
         - containerPort: 8000
       resources:

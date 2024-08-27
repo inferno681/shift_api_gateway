@@ -13,15 +13,14 @@ data:
       tags_metadata_health:
         name: "Health"
         description: "Проверка доступности сервиса"
+    auth_service:
+      base_url: "http://stakrotckii-auth-service-service:8000/api/"
+      tags_metadata:
+         name: "Auth service"
+         description: "Сервис авторизации"
 
-      auth_service:
-        base_url: "http://stakrotckii-auth-service-service:8000/api/"
-        tags_metadata:
-          name: "Auth service"
-          description: "Сервис авторизации"
-
-      transaction_service:
-        base_url: "http://stakrotckii-transaction-service-service:8000/api/"
-        tags_metadata:
-          name: "Transaction service"
-          description: "Сервис транзакций"
+    transaction_service:
+      base_url: "http://stakrotckii-transaction-service-service:8000/api/"
+      tags_metadata:
+        name: "Transaction service"
+        description: "Сервис транзакций"
