@@ -1,7 +1,15 @@
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    HTTPException,
+    UploadFile,
+    status,
+    Request,
+)
 from fastapi.responses import JSONResponse
 from httpx import AsyncClient
-
+from opentracing import global_tracer, Format
 from app.api.schemes import ErrorSchema, KafkaResponse, UserCreate, UserToken
 from app.constants import (
     AUTH_LINK,
@@ -21,14 +29,25 @@ router = APIRouter()
 )
 async def registration(
     user: UserCreate,
+    request: Request,
     client: AsyncClient = Depends(get_client_auth),
 ):
     """Эндпоинт регистрации пользователя."""
-    response = await client.post(REGISTRATION_LINK, json=user.model_dump())
-    return JSONResponse(
-        status_code=response.status_code,
-        content=response.json(),
-    )
+    with global_tracer().start_active_span('registration') as scope:
+        data = await request.json()
+        scope.span.set_tag('reg_data', str(data))
+        headers = {}
+        global_tracer().inject(
+            scope.span.context, Format.HTTP_HEADERS, headers
+        )
+        response = await client.post(
+            REGISTRATION_LINK, json=user.model_dump(), headers=headers
+        )
+        scope.span.set_tag('response_status', response.status_code)
+        return JSONResponse(
+            status_code=response.status_code,
+            content=response.json(),
+        )
 
 
 @router.post(
