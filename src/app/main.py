@@ -1,4 +1,8 @@
 from contextlib import asynccontextmanager
+
+import uvicorn
+from fastapi import FastAPI, Request
+from jaeger_client import Config
 from opentracing import (
     InvalidCarrierException,
     SpanContextCorruptedException,
@@ -7,35 +11,33 @@ from opentracing import (
     tags,
 )
 
-import uvicorn
-from fastapi import FastAPI, Request
-
 from app.api import service_router
 from config import config
-from jaeger_client import Config
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Запуск и остановка трейсера перед запуском приложения."""
     tracer_config = Config(
         config={
             'sampler': {
-                'type': 'const',
-                'param': 1,
+                'type': config.jaeger.sampler_type,  # type: ignore
+                'param': config.jaeger.sampler_param,  # type: ignore
             },
             'local_agent': {
-                'reporting_host': 'localhost',
-                'reporting_port': '6831',
+                'reporting_host': config.jaeger.host,  # type: ignore
+                'reporting_port': config.jaeger.port,  # type: ignore
             },
-            'logging': True,
+            'logging': config.jaeger.logging,  # type: ignore
         },
-        service_name='gateway',
+        service_name=config.jaeger.service_name,  # type: ignore
         validate=True,
     )
     tracer = tracer_config.initialize_tracer()
     app.state.jaeger_tracer = tracer
     yield
-    tracer.close()
+    if tracer:
+        tracer.close()
 
 
 tags_metadata = [
@@ -55,18 +57,16 @@ app = FastAPI(
 app.include_router(service_router, prefix='/api')
 
 
-@app.middleware("http")
+@app.middleware('http')
 async def tracing_middleware(request: Request, call_next):
+    """Middleware для трейсинга."""
     path = request.url.path
-    if (
-        path.startswith('/up')
-        or path.startswith('/ready')
-        or path.startswith('/metrics')
-    ):
+    if path.startswith('/ready') or path.startswith('/metrics'):
         return await call_next(request)
     try:
         span_ctx = global_tracer().extract(
-            propagation.Format.HTTP_HEADERS, request.headers
+            propagation.Format.HTTP_HEADERS,
+            dict(request.headers),
         )
     except (InvalidCarrierException, SpanContextCorruptedException):
         span_ctx = None
@@ -76,7 +76,7 @@ async def tracing_middleware(request: Request, call_next):
         tags.HTTP_URL: str(request.url),
     }
     with global_tracer().start_active_span(
-        f"gateway_{request.method}_{path}",
+        f'gateway_{request.method}_{path}',
         child_of=span_ctx,
         tags=span_tags,
     ) as scope:

@@ -19,3 +19,11 @@ transaction_service:
   tags_metadata:
     name: "Transaction service"
     description: "Сервис транзакций"
+
+jaeger:
+  service_name: "gateway"
+  host: "localhost"
+  port: 6831
+  logging: True
+  sampler_type: "const"
+  sampler_param: 1

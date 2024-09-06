@@ -1460,6 +1460,17 @@ shellingham = ">=1.3.0"
 typing-extensions = ">=3.7.4.3"
 
 [[package]]
+name = "types-opentracing"
+version = "2.4.10.6"
+description = "Typing stubs for opentracing"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-opentracing-2.4.10.6.tar.gz", hash = "sha256:87a1bdfce9de5e555e30497663583b9b9c3bb494d029ef9806aa1f137c19e744"},
+    {file = "types_opentracing-2.4.10.6-py3-none-any.whl", hash = "sha256:25914c834db033a4a38fc322df0b5e5e14503b0ac97f78304ae180d721555e97"},
+]
+
+[[package]]
 name = "types-pyyaml"
 version = "6.0.12.20240808"
 description = "Typing stubs for PyYAML"
@@ -1780,4 +1791,4 @@ typing_extensions = ">=4.0,<5.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "2cb14a510223ebebdc7075a6bf7edb31e541bb118f4dcb3840f8a6988654c066"
+content-hash = "bad13a383177119833cce02172403e0b247e58c38a61e536f730f06b46dfe2dd"

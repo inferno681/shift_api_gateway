@@ -3,13 +3,14 @@ from fastapi import (
     Depends,
     File,
     HTTPException,
+    Request,
     UploadFile,
     status,
-    Request,
 )
 from fastapi.responses import JSONResponse
 from httpx import AsyncClient
-from opentracing import global_tracer, Format
+from opentracing import Format, global_tracer
+
 from app.api.schemes import ErrorSchema, KafkaResponse, UserCreate, UserToken
 from app.constants import (
     AUTH_LINK,
@@ -35,13 +36,17 @@ async def registration(
     """Эндпоинт регистрации пользователя."""
     with global_tracer().start_active_span('registration') as scope:
         data = await request.json()
-        scope.span.set_tag('reg_data', str(data))
-        headers = {}
+        scope.span.set_tag('registration_data', str(data))
+        headers: dict[str, str] = {}
         global_tracer().inject(
-            scope.span.context, Format.HTTP_HEADERS, headers
+            scope.span.context,
+            Format.HTTP_HEADERS,
+            headers,
         )
         response = await client.post(
-            REGISTRATION_LINK, json=user.model_dump(), headers=headers
+            REGISTRATION_LINK,
+            json=user.model_dump(),
+            headers=headers,
         )
         scope.span.set_tag('response_status', response.status_code)
         return JSONResponse(
@@ -57,14 +62,29 @@ async def registration(
 )
 async def authentication(
     user: UserCreate,
+    request: Request,
     client: AsyncClient = Depends(get_client_auth),
 ):
     """Эндпоинт аутентификации пользователя."""
-    response = await client.post(AUTH_LINK, json=user.model_dump())
-    return JSONResponse(
-        status_code=response.status_code,
-        content=response.json(),
-    )
+    with global_tracer().start_active_span('login') as scope:
+        data = await request.json()
+        scope.span.set_tag('login_data', str(data))
+        headers: dict[str, str] = {}
+        global_tracer().inject(
+            scope.span.context,
+            Format.HTTP_HEADERS,
+            headers,
+        )
+        response = await client.post(
+            AUTH_LINK,
+            json=user.model_dump(),
+            headers=headers,
+        )
+        scope.span.set_tag('response_status', response.status_code)
+        return JSONResponse(
+            status_code=response.status_code,
+            content=response.json(),
+        )
 
 
 @router.post(
