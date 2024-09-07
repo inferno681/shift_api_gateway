@@ -26,7 +26,7 @@ data:
         description: "Сервис транзакций"
 
     jaeger:
-      service_name: "gateway"
+      service_name: "stakrotckii_gateway"
       host: "jaeger-query-service"
       port: 6831
       logging: True

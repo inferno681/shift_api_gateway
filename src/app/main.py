@@ -61,7 +61,7 @@ app.include_router(service_router, prefix='/api')
 async def tracing_middleware(request: Request, call_next):
     """Middleware для трейсинга."""
     path = request.url.path
-    if path.startswith('/ready') or path.startswith('/metrics'):
+    if path.endswith(('/ready', '/metrics', '/docs', '/openapi.json')):
         return await call_next(request)
     try:
         span_ctx = global_tracer().extract(

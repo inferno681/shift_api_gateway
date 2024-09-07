@@ -98,10 +98,10 @@ app:
           name: "Transaction service"
           description: "Сервис транзакций"
 
-       jaeger:
-        service_name: "gateway"
-        host: "jaeger-query-service"
-        port: 6831
+      jaeger:
+        service_name: "stakrotckii_gateway"
+        host: "infra-jaeger-agent"
+        port: 5775
         logging: True
         sampler_type: "const"
         sampler_param: 1
