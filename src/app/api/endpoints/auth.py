@@ -97,15 +97,25 @@ async def verify(
     file: UploadFile = File(),
 ):
     """Эндпоинт загрузки фотографии."""
-    if file.filename is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=FILENAME_ERROR,
+    with global_tracer().start_active_span('photo_upload') as scope:
+        if file.filename is None:
+            scope.span.set_tag('error', FILENAME_ERROR)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=FILENAME_ERROR,
+            )
+        file_bytes = await file.read()
+        headers: dict[str, str] = {}
+        global_tracer().inject(
+            scope.span.context,
+            Format.HTTP_HEADERS,
+            headers,
         )
-    file_bytes = await file.read()
-    await client.post(
-        PHOTO_UPLOAD_LINK,
-        data={'user_id': user_id},
-        files={'file': (file.filename, file_bytes, file.content_type)},
-    )
-    return KafkaResponse
+        await client.post(
+            PHOTO_UPLOAD_LINK,
+            data={'user_id': user_id},
+            files={'file': (file.filename, file_bytes, file.content_type)},
+            headers=headers,
+        )
+        scope.span.set_tag('result', 'изображение отправлено')
+        return KafkaResponse
