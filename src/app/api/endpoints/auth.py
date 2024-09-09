@@ -8,8 +8,7 @@ from fastapi import (
     status,
 )
 from fastapi.responses import JSONResponse
-from httpx import AsyncClient
-from opentracing import Format, global_tracer
+from opentracing import global_tracer
 
 from app.api.schemes import ErrorSchema, KafkaResponse, UserCreate, UserToken
 from app.constants import (
@@ -18,7 +17,7 @@ from app.constants import (
     PHOTO_UPLOAD_LINK,
     REGISTRATION_LINK,
 )
-from app.service import check_token, get_client_auth
+from app.service import check_token
 
 router = APIRouter()
 
@@ -31,27 +30,21 @@ router = APIRouter()
 async def registration(
     user: UserCreate,
     request: Request,
-    client: AsyncClient = Depends(get_client_auth),
 ):
     """Эндпоинт регистрации пользователя."""
     with global_tracer().start_active_span('registration') as scope:
         data = await request.json()
         scope.span.set_tag('registration_data', str(data))
-        headers: dict[str, str] = {}
-        global_tracer().inject(
-            scope.span.context,
-            Format.HTTP_HEADERS,
-            headers,
+        response, status_code = (
+            await request.app.state.auth_client.registration(
+                user.model_dump(),
+            )
         )
-        response = await client.post(
-            REGISTRATION_LINK,
-            json=user.model_dump(),
-            headers=headers,
-        )
-        scope.span.set_tag('response_status', response.status_code)
+
+        scope.span.set_tag('response_status', status_code)
         return JSONResponse(
-            status_code=response.status_code,
-            content=response.json(),
+            status_code=status_code,
+            content=response,
         )
 
 
@@ -60,30 +53,18 @@ async def registration(
     response_model=UserToken,
     responses={404: {'model': ErrorSchema}},
 )
-async def authentication(
-    user: UserCreate,
-    request: Request,
-    client: AsyncClient = Depends(get_client_auth),
-):
+async def authentication(user: UserCreate, request: Request):
     """Эндпоинт аутентификации пользователя."""
     with global_tracer().start_active_span('login') as scope:
         data = await request.json()
         scope.span.set_tag('login_data', str(data))
-        headers: dict[str, str] = {}
-        global_tracer().inject(
-            scope.span.context,
-            Format.HTTP_HEADERS,
-            headers,
+        response, status_code = await request.app.state.auth_client.login(
+            user.model_dump(),
         )
-        response = await client.post(
-            AUTH_LINK,
-            json=user.model_dump(),
-            headers=headers,
-        )
-        scope.span.set_tag('response_status', response.status_code)
+        scope.span.set_tag('response_status', status_code)
         return JSONResponse(
-            status_code=response.status_code,
-            content=response.json(),
+            status_code=status_code,
+            content=response,
         )
 
 
@@ -92,8 +73,8 @@ async def authentication(
     response_model=KafkaResponse,
 )
 async def verify(
+    request: Request,
     user_id: int = Depends(check_token),
-    client: AsyncClient = Depends(get_client_auth),
     file: UploadFile = File(),
 ):
     """Эндпоинт загрузки фотографии."""
@@ -104,18 +85,6 @@ async def verify(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=FILENAME_ERROR,
             )
-        file_bytes = await file.read()
-        headers: dict[str, str] = {}
-        global_tracer().inject(
-            scope.span.context,
-            Format.HTTP_HEADERS,
-            headers,
-        )
-        await client.post(
-            PHOTO_UPLOAD_LINK,
-            data={'user_id': user_id},
-            files={'file': (file.filename, file_bytes, file.content_type)},
-            headers=headers,
-        )
+        await request.app.state.auth_client.verify(user_id=user_id, file=file)
         scope.span.set_tag('result', 'изображение отправлено')
         return KafkaResponse

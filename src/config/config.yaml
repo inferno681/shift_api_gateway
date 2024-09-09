@@ -9,7 +9,7 @@ service:
     description: "Проверка доступности сервиса"
 
 auth_service:
-  base_url: "http://auth_service:8000/api/"
+  base_url: "http://auth_service:8000/api"
   tags_metadata:
     name: "Auth service"
     description: "Сервис авторизации"
