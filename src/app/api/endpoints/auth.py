@@ -35,7 +35,7 @@ async def registration(
     with global_tracer().start_active_span('registration') as scope:
         data = await request.json()
         scope.span.set_tag('registration_data', str(data))
-        response, status_code = (
+        response_data, status_code = (
             await request.app.state.auth_client.registration(
                 user.model_dump(),
             )
@@ -44,7 +44,7 @@ async def registration(
         scope.span.set_tag('response_status', status_code)
         return JSONResponse(
             status_code=status_code,
-            content=response,
+            content=response_data,
         )
 
 
@@ -58,13 +58,13 @@ async def authentication(user: UserCreate, request: Request):
     with global_tracer().start_active_span('login') as scope:
         data = await request.json()
         scope.span.set_tag('login_data', str(data))
-        response, status_code = await request.app.state.auth_client.login(
+        response_data, status_code = await request.app.state.auth_client.login(
             user.model_dump(),
         )
         scope.span.set_tag('response_status', status_code)
         return JSONResponse(
             status_code=status_code,
-            content=response,
+            content=response_data,
         )
 
 

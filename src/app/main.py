@@ -13,6 +13,7 @@ from opentracing import (
 
 from app.api import service_router
 from app.service import AuthServiceClient
+from app.service.service import TransactionServiceClient
 from config import config
 
 
@@ -36,12 +37,23 @@ async def lifespan(app: FastAPI):
     )
     tracer = tracer_config.initialize_tracer()
     app.state.jaeger_tracer = tracer
+
     auth_client = AuthServiceClient(config.auth_service.base_url)  # type: ignore # noqa: E501
     app.state.auth_client = auth_client
+
+    transaction_client = TransactionServiceClient(
+        config.transaction_service.base_url,  # type: ignore
+    )
+    app.state.transaction_client = transaction_client
+
     yield
+
     if tracer:
         tracer.close()
+
     await auth_client.aclose()
+
+    await transaction_client.aclose()
 
 
 tags_metadata = [

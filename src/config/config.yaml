@@ -9,13 +9,13 @@ service:
     description: "Проверка доступности сервиса"
 
 auth_service:
-  base_url: "http://auth_service:8000/api"
+  base_url: "http://localhost:8001/api"
   tags_metadata:
     name: "Auth service"
     description: "Сервис авторизации"
 
 transaction_service:
-  base_url: "http://transaction_service:8000/api/"
+  base_url: "http://localhost:8002/api"
   tags_metadata:
     name: "Transaction service"
     description: "Сервис транзакций"

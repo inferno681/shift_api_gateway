@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from httpx import AsyncClient
-from opentracing import Format, global_tracer
+from opentracing import global_tracer
 
 from app.api.schemes import (
     ErrorSchema,
@@ -12,7 +11,7 @@ from app.api.schemes import (
     TransactionReportCreate,
 )
 from app.constants import CREATE_REPORT_LINK, CREATE_TRANSACTION_LINK
-from app.service import check_token, get_client_transaction
+from app.service import check_token
 
 router = APIRouter()
 
@@ -27,7 +26,7 @@ router = APIRouter()
 )
 async def create_transaction(
     transaction: TransactionCreate,
-    client: AsyncClient = Depends(get_client_transaction),
+    request: Request,
     user_id: int = Depends(check_token),
 ):
     """Эндпоинт создания транзакции."""
@@ -35,21 +34,15 @@ async def create_transaction(
         request_data = transaction.model_dump()
         request_data['user_id'] = user_id
         scope.span.set_tag('request_data', str(request_data))
-        headers: dict[str, str] = {}
-        global_tracer().inject(
-            scope.span.context,
-            Format.HTTP_HEADERS,
-            headers,
+        response_data, status_code = (
+            await request.app.state.transaction_client.create_transaction(
+                request_data,
+            )
         )
-        response = await client.post(
-            CREATE_TRANSACTION_LINK,
-            json=request_data,
-            headers=headers,
-        )
-        scope.span.set_tag('status', response.status_code)
+        scope.span.set_tag('status', status_code)
         return JSONResponse(
-            status_code=response.status_code,
-            content=response.json(),
+            status_code=status_code,
+            content=response_data,
         )
 
 
@@ -61,7 +54,7 @@ async def create_transaction(
 )
 async def create_report(
     report_data: TransactionReportCreate,
-    client: AsyncClient = Depends(get_client_transaction),
+    request: Request,
     user_id: int = Depends(check_token),
 ):
     """Эндпоинт создания отчета."""
@@ -69,19 +62,13 @@ async def create_report(
         request_data = jsonable_encoder(report_data)
         request_data['user_id'] = user_id
         scope.span.set_tag('request_data', request_data)
-        headers: dict[str, str] = {}
-        global_tracer().inject(
-            scope.span.context,
-            Format.HTTP_HEADERS,
-            headers,
+        response_data, status_code = (
+            await request.app.state.transaction_client.create_report(
+                request_data,
+            )
         )
-        response = await client.post(
-            CREATE_REPORT_LINK,
-            json=request_data,
-            headers=headers,
-        )
-        scope.span.set_tag('status', response.status_code)
+        scope.span.set_tag('status', status_code)
         return JSONResponse(
-            status_code=response.status_code,
-            content=response.json(),
+            status_code=status_code,
+            content=response_data,
         )

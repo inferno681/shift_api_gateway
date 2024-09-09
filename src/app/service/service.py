@@ -7,11 +7,13 @@ from app.api.schemes import UserTokenCheck
 from app.constants import (
     AUTH_LINK,
     CHECK_TOKEN_LINK,
+    CREATE_REPORT_LINK,
+    CREATE_TRANSACTION_LINK,
+    HEALTH_LINK,
     INVALID_TOKEN_MESSAGE,
     PHOTO_UPLOAD_LINK,
     REGISTRATION_LINK,
 )
-from config import config
 
 header_scheme = APIKeyHeader(name='Authorization')
 
@@ -23,6 +25,12 @@ class ServiceClient:
         """Инициализация клиента."""
         self.client = AsyncClient()
         self.base_url = base_url
+
+    async def check_health(self) -> bool:
+        """Метод выполнения GET запроса для проверки готовности сервиса."""
+        url = f'{self.base_url}{HEALTH_LINK}'
+        response = await self.client.get(url)
+        return response.status_code == status.HTTP_200_OK
 
     async def post(self, path: str, **kwargs):
         """Метод выполнения POST запроса с добавлением хэдеров трейсинга."""
@@ -69,20 +77,16 @@ class AuthServiceClient(ServiceClient):
         )
 
 
-async def get_client_transaction():
-    """Клиент для запросов к transaction_service."""
-    async with AsyncClient(
-        base_url=config.transaction_service.base_url,
-    ) as client:
-        yield client
+class TransactionServiceClient(ServiceClient):
+    """Клиент для запросов к сервису авторизации."""
 
+    async def create_transaction(self, data):
+        """Запрос создания транзакции."""
+        return await self.post(CREATE_TRANSACTION_LINK, json=data)
 
-async def get_client_auth():
-    """Клиент для запросов к auth_service."""
-    async with AsyncClient(
-        base_url=config.auth_service.base_url,
-    ) as client:
-        yield client
+    async def create_report(self, data):
+        """Запрос создания отчета."""
+        return await self.post(CREATE_REPORT_LINK, json=data)
 
 
 async def check_token(
@@ -92,17 +96,17 @@ async def check_token(
     """Проверка токена пользователя."""
     with global_tracer().start_active_span('check_token') as scope:
         scope.span.set_tag('token', token[:10] + '...')
-        response, status_code = (
+        response_data, status_code = (
             await request.app.state.auth_client.check_token(token)
         )
         scope.span.set_tag('response_status', status_code)
         if status_code != status.HTTP_200_OK:
-            scope.span.set_tag('error', response['detail'])
+            scope.span.set_tag('error', response_data['detail'])
             raise HTTPException(
                 status_code=status_code,
-                detail=response['detail'],
+                detail=response_data['detail'],
             )
-        result = UserTokenCheck(**response)
+        result = UserTokenCheck(**response_data)
         if not result.is_token_valid:
             scope.span.set_tag('error', INVALID_TOKEN_MESSAGE)
             raise HTTPException(
