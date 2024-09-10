@@ -12,8 +12,7 @@ from opentracing import (
 )
 
 from app.api import service_router
-from app.service import AuthServiceClient
-from app.service.service import TransactionServiceClient
+from app.service import AuthServiceClient, TransactionServiceClient
 from config import config
 
 

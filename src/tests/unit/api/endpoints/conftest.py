@@ -2,25 +2,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 from fastapi import status
-from httpx import ASGITransport, AsyncClient, Response
-
-from app.main import app
-
-
-@pytest.fixture
-def anyio_backend():
-    """Бэкэнд для тестирования."""
-    return 'asyncio'
-
-
-@pytest.fixture
-async def client():
-    """Фикстура клиента для подключения к тестовому серверу."""
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url='http://127.0.0.1:8000/api/',
-    ) as client:
-        yield client
+from httpx import Response
 
 
 @pytest.fixture
