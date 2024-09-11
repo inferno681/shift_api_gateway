@@ -1,15 +1,17 @@
-from unittest.mock import AsyncMock, patch
+import re
 
 import pytest
 from fastapi import status
-from httpx import Response
 
-
-@pytest.fixture
-def mock_client():
-    """Фикстура для мока AsyncClient."""
-    with patch('app.service.service.AsyncClient') as mock_client:
-        yield mock_client
+from app.constants import (
+    AUTH_LINK,
+    CHECK_TOKEN_LINK,
+    CREATE_REPORT_LINK,
+    CREATE_TRANSACTION_LINK,
+    HEALTH_LINK,
+    REGISTRATION_LINK,
+)
+from config import config
 
 
 @pytest.fixture
@@ -25,36 +27,25 @@ def auth_link():
 
 
 @pytest.fixture
-def mock_post_registration_success():
-    """Фикстура для мока регистрации и авторизации."""
-    mock_post = AsyncMock()
-    mock_post.return_value = Response(
-        status.HTTP_200_OK,
-        json={'token': 'token'},
+def mock_post_registration_failure(httpx_mock):
+    """Фикстура для мока регистрации."""
+    httpx_mock.add_response(
+        method='POST',
+        url=config.auth_service.base_url + REGISTRATION_LINK,
+        json={'detail': 'error_message'},
+        status_code=status.HTTP_400_BAD_REQUEST,
     )
-    return mock_post
 
 
 @pytest.fixture
-def mock_post_registration_failure():
+def mock_post_wrong_user_data(httpx_mock):
     """Фикстура для мока регистрации и авторизации."""
-    mock_post = AsyncMock()
-    mock_post.return_value = Response(
-        status.HTTP_400_BAD_REQUEST,
+    httpx_mock.add_response(
+        method='POST',
+        url=config.auth_service.base_url + AUTH_LINK,
         json={'detail': 'error_message'},
+        status_code=status.HTTP_404_NOT_FOUND,
     )
-    return mock_post
-
-
-@pytest.fixture
-def mock_post_wrong_user_data():
-    """Фикстура для мока регистрации и авторизации."""
-    mock_post = AsyncMock()
-    mock_post.return_value = Response(
-        status.HTTP_404_NOT_FOUND,
-        json={'detail': 'error_message'},
-    )
-    return mock_post
 
 
 @pytest.fixture
@@ -75,12 +66,24 @@ def wrong_user_data(request):
     return request.param
 
 
-@pytest.fixture()
-def reg_auth_links(request, registration_link, auth_link):
+def add_mock_response(httpx_mock, link: str) -> None:
+    """Добавляет мок для HTTP-запроса к сервису авторизации."""
+    httpx_mock.add_response(
+        method='POST',
+        url=config.auth_service.base_url + link,  # type: ignore
+        json={'token': 'token'},
+        status_code=status.HTTP_200_OK,
+    )
+
+
+@pytest.fixture
+def reg_auth_links(request, registration_link, auth_link, httpx_mock):
     """Фикстура подстановки ссылок на регистрацию и авторизацию."""
     if request.param == 'registration':
+        add_mock_response(httpx_mock, REGISTRATION_LINK)
         return registration_link
     elif request.param == 'auth':
+        add_mock_response(httpx_mock, AUTH_LINK)
         return auth_link
 
 
@@ -105,11 +108,37 @@ def credit_transaction():
 
 
 @pytest.fixture()
-def transaction_data(request, debit_transaction, credit_transaction):
+def transaction_data(
+    request,
+    debit_transaction,
+    credit_transaction,
+    httpx_mock,
+):
     """Фикстура подстановки транзакций списания и пополнения."""
     if request.param == 'debit':
+        debit_transaction_mock = debit_transaction.copy()
+        debit_transaction_mock['id'] = 1
+        debit_transaction_mock['user_id'] = 1
+        debit_transaction_mock['created_at'] = '2024-08-05T01:09:59.652Z'
+        httpx_mock.add_response(
+            method='POST',
+            url=config.transaction_service.base_url + CREATE_TRANSACTION_LINK,
+            json=debit_transaction_mock,
+            status_code=status.HTTP_200_OK,
+        )
         return debit_transaction
+
     elif request.param == 'credit':
+        credit_transaction_mock = credit_transaction.copy()
+        credit_transaction_mock['id'] = 1
+        credit_transaction_mock['user_id'] = 1
+        credit_transaction_mock['created_at'] = '2024-08-05T01:09:59.652Z'
+        httpx_mock.add_response(
+            method='POST',
+            url=config.transaction_service.base_url + CREATE_TRANSACTION_LINK,
+            json=credit_transaction_mock,
+            status_code=status.HTTP_200_OK,
+        )
         return credit_transaction
 
 
@@ -146,40 +175,43 @@ def wrong_report_data():
 
 
 @pytest.fixture
-def mock_post_transaction_create():
-    """
-    Фикстура для мока создания транзакции.
-
-    Первые два ключа являются ответом на проверку токена.
-    """
-    mock_post = AsyncMock()
-    mock_post.return_value = Response(
-        status.HTTP_200_OK,
+def mock_post_check_token(httpx_mock):
+    """Фикстура для мока токена."""
+    httpx_mock.add_response(
+        method='POST',
+        url=config.auth_service.base_url + CHECK_TOKEN_LINK,
         json={
             'user_id': 1,
             'is_token_valid': True,
+        },
+        status_code=status.HTTP_200_OK,
+    )
+
+
+@pytest.fixture
+def mock_post_transaction_create(httpx_mock):
+    """Фикстура для мока создания транзакции."""
+    httpx_mock.add_response(
+        method='POST',
+        url=config.transaction_service.base_url + CREATE_TRANSACTION_LINK,
+        json={
             'id': 1,
             'amount': 'string',
             'transaction_type': 'списание',
             'created_at': '2024-08-05T01:09:59.652Z',
         },
+        status_code=status.HTTP_200_OK,
     )
-    return mock_post
 
 
 @pytest.fixture
-def mock_post_create_report():
-    """
-    Фикстура для мока создания отчета.
-
-    Первые два ключа являются ответом на проверку токена.
-    """
-    mock_post = AsyncMock()
-    mock_post.return_value = Response(
-        status.HTTP_200_OK,
+def mock_post_create_report(httpx_mock):
+    """Фикстура для мока создания отчета."""
+    httpx_mock.add_response(
+        method='POST',
+        url=config.transaction_service.base_url + CREATE_REPORT_LINK,
         json={
             'user_id': 1,
-            'is_token_valid': True,
             'start_date': '2024-08-05T01:15:01.231Z',
             'end_date': '2024-08-05T01:15:01.231Z',
             'transactions': [
@@ -194,23 +226,19 @@ def mock_post_create_report():
             'debit': 'string',
             'credit': 'string',
         },
+        status_code=status.HTTP_200_OK,
     )
-    return mock_post
 
 
 @pytest.fixture
-def mock_post_create_wrong_report():
-    """
-    Фикстура для мока создания отчета.
-
-    Первые два ключа являются ответом на проверку токена.
-    """
-    mock_post = AsyncMock()
-    mock_post.return_value = Response(
-        status.HTTP_400_BAD_REQUEST,
-        json={'user_id': 1, 'is_token_valid': True, 'detail': 'some_error'},
+def mock_post_create_wrong_report(httpx_mock):
+    """Фикстура для мока создания отчета."""
+    httpx_mock.add_response(
+        method='POST',
+        url=config.transaction_service.base_url + CREATE_REPORT_LINK,
+        json={'detail': 'some_error'},
+        status_code=status.HTTP_400_BAD_REQUEST,
     )
-    return mock_post
 
 
 @pytest.fixture
@@ -226,25 +254,25 @@ def check_health_link():
 
 
 @pytest.fixture
-def mock_get_health():
+def mock_get_health(httpx_mock):
     """Фикстура с положительным ответом о готовности сервисов."""
-    mock_get = AsyncMock()
-    mock_get.return_value = Response(
-        status.HTTP_200_OK,
+    httpx_mock.add_response(
+        method='GET',
+        url=re.compile(rf'.*{re.escape(HEALTH_LINK)}$'),
         json={'is_ready': True},
+        status_code=status.HTTP_200_OK,
     )
-    return mock_get
 
 
 @pytest.fixture
-def mock_get_unhealth():
+def mock_get_unhealth(httpx_mock):
     """Фикстура с отрицательным ответом о готовности сервисов."""
-    mock_get = AsyncMock()
-    mock_get.return_value = Response(
-        status.HTTP_503_SERVICE_UNAVAILABLE,
+    httpx_mock.add_response(
+        method='GET',
+        url=re.compile(rf'.*{re.escape(HEALTH_LINK)}$'),
         json={'detail': 'detail'},
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
     )
-    return mock_get
 
 
 @pytest.fixture
