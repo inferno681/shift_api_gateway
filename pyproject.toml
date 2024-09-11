@@ -23,6 +23,7 @@ wemake-python-styleguide = "^0.19.2"
 types-pyyaml = "^6.0.12.20240724"
 asgi-lifespan = "^2.1.0"
 types-opentracing = "^2.4.10.6"
+pytest-httpx = "^0.30.0"
 
 [build-system]
 requires = ["poetry-core"]
