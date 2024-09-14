@@ -5,21 +5,21 @@ from pydantic import BaseModel, PositiveFloat, PositiveInt
 
 
 class TransactionType(str, Enum):
-    """Типы транзакций."""
+    """Transaction types."""
 
-    DEBIT = 'списание'
-    CREDIT = 'пополнение'
+    DEBIT = 'debit'
+    CREDIT = 'credit'
 
 
 class TransactionCreate(BaseModel):
-    """Схема создания транзакции."""
+    """Transaction creation scheme."""
 
     amount: PositiveInt | PositiveFloat
     transaction_type: TransactionType
 
 
 class Transaction(TransactionCreate):
-    """Схема транзакции."""
+    """Transaction scheme."""
 
     user_id: PositiveInt
     id: PositiveInt
@@ -27,14 +27,14 @@ class Transaction(TransactionCreate):
 
 
 class TransactionReportCreate(BaseModel):
-    """Схема создания отчета."""
+    """Report creation scheme."""
 
     start_date: datetime
     end_date: datetime
 
 
 class TransactionReport(TransactionReportCreate):
-    """Схема отчета."""
+    """Report scheme."""
 
     user_id: PositiveInt
     transactions: list[TransactionType] | list

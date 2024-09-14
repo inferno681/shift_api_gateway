@@ -1,24 +1,24 @@
 service:
   title: "API Gateway"
-  description: "Единая точка входа в несколько сервисов."
+  description: "Entrance point for services."
   host: "0.0.0.0"
   port: 8000
   debug: True
   tags_metadata_health:
     name: "Health"
-    description: "Проверка доступности сервиса"
+    description: "Service health check"
 
 auth_service:
   base_url: "http://auth_service:8000/api"
   tags_metadata:
     name: "Auth service"
-    description: "Сервис авторизации"
+    description: "Authentication service"
 
 transaction_service:
   base_url: "http://transaction_service:8000/api"
   tags_metadata:
     name: "Transaction service"
-    description: "Сервис транзакций"
+    description: "Transaction service"
 
 jaeger:
   service_name: "gateway"

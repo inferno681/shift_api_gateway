@@ -11,18 +11,18 @@ router = APIRouter()
     responses={200: {'model': IsReady}, 503: {'model': ErrorSchema}},
 )
 async def check_health(request: Request):
-    """Эндпоинт проверки запущен ли сервис."""
+    """Health check endpoint."""
     unavailable_services = []
     try:
         if not await request.app.state.auth_client.check_health():
-            unavailable_services.append('Сервис авторизации')
+            unavailable_services.append('Auth service')
     except Exception:
-        unavailable_services.append('Сервис авторизации')
+        unavailable_services.append('Auth service')
     try:
         if not await request.app.state.transaction_client.check_health():
-            unavailable_services.append('Сервис транзакций')
+            unavailable_services.append('Transaction service')
     except Exception:
-        unavailable_services.append('Сервис транзакций')
+        unavailable_services.append('Transaction service')
     if unavailable_services:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

@@ -2,12 +2,12 @@ from pydantic import BaseModel
 
 
 class ErrorSchema(BaseModel):
-    """Схема для вывода ошибок."""
+    """Errors scheme."""
 
     detail: str
 
 
 class IsReady(BaseModel):
-    """Схема ответа health check."""
+    """Health check response scheme."""
 
     is_ready: bool

@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -15,10 +16,12 @@ from app.api import service_router
 from app.service import AuthServiceClient, TransactionServiceClient
 from config import config
 
+log = logging.Logger('uvicorn')
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Запуск и остановка трейсера перед запуском приложения."""
+    """Actions before and after application start."""
     tracer_config = Config(
         config={
             'sampler': {
@@ -36,23 +39,29 @@ async def lifespan(app: FastAPI):
     )
     tracer = tracer_config.initialize_tracer()
     app.state.jaeger_tracer = tracer
+    log.info('Tracer initialized')
 
     auth_client = AuthServiceClient(config.auth_service.base_url)  # type: ignore # noqa: E501
     app.state.auth_client = auth_client
+    log.info('Auth client started')
 
     transaction_client = TransactionServiceClient(
         config.transaction_service.base_url,  # type: ignore
     )
     app.state.transaction_client = transaction_client
+    log.info('Transaction client started')
 
     yield
 
     if tracer:
         tracer.close()
+        log.info('Tracer stopped')
 
     await auth_client.aclose()
+    log.info('Auth client closed')
 
     await transaction_client.aclose()
+    log.info('Transaction client started')
 
 
 tags_metadata = [
@@ -74,7 +83,7 @@ app.include_router(service_router, prefix='/api')
 
 @app.middleware('http')
 async def tracing_middleware(request: Request, call_next):
-    """Middleware для трейсинга."""
+    """Tracing Middleware."""
     path = request.url.path
     if path.endswith(('/ready', '/metrics', '/docs', '/openapi.json')):
         return await call_next(request)
