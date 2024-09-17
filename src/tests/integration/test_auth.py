@@ -4,7 +4,7 @@ from fastapi import status
 
 @pytest.mark.anyio
 async def test_registration(client, test_user, registration_link):
-    """Тест регистрации пользователя."""
+    """Registration test."""
     response = await client.post(registration_link, json=test_user)
     assert response.status_code == status.HTTP_200_OK
     assert 'token' in response.json()
@@ -13,7 +13,7 @@ async def test_registration(client, test_user, registration_link):
 
 @pytest.mark.anyio
 async def test_authentication(client, test_user, auth_link, registration_link):
-    """Тест аутентификации пользователя."""
+    """Auth test."""
     await client.post(registration_link, json=test_user)
     response = await client.post(auth_link, json=test_user)
     assert response.status_code == status.HTTP_200_OK
@@ -27,7 +27,7 @@ async def test_registration_existing_user(
     test_user,
     registration_link,
 ):
-    """Тест регистрации уже существующего пользователя."""
+    """Existing user registration test."""
     response = await client.post(registration_link, json=test_user)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert 'detail' in response.json()
@@ -42,7 +42,7 @@ async def test_wrong_login(
     wrong_user_data,
     test_user,
 ):
-    """Тест аутентификации пользователя с некорректными данными."""
+    """Auth test with incorrect data."""
     await client.post(registration_link, json=test_user)
     response = await client.post(auth_link, json=wrong_user_data)
     assert response.status_code == status.HTTP_404_NOT_FOUND

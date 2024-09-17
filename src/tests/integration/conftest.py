@@ -1,59 +1,9 @@
-from datetime import UTC, datetime, timedelta
-
 import pytest
-
-
-@pytest.fixture
-def registration_link():
-    """Фикстура со ссылкой на регистрацию."""
-    return '/auth/registration'
-
-
-@pytest.fixture
-def auth_link():
-    """Фикстура со ссылкой на аутентификацию."""
-    return '/auth/auth'
-
-
-@pytest.fixture
-def test_user():
-    """Фикстура с данными пользователя."""
-    return {'login': 'user', 'password': 'password'}
-
-
-@pytest.fixture(
-    params=(
-        {'login': 'user', 'password': 'wrongpassword'},
-        {'login': 'no_user', 'password': 'wrongpassword'},
-    ),
-    ids=('wrong_password', 'no_user'),
-)
-def wrong_user_data(request):
-    """Фикстура с некорректными данными пользователя."""
-    return request.param
-
-
-@pytest.fixture()
-def debit_transaction():
-    """Фикстура транзакции списания."""
-    return {
-        'amount': 100,
-        'transaction_type': 'списание',
-    }
-
-
-@pytest.fixture()
-def credit_transaction():
-    """Фикстура транзакции пополнения."""
-    return {
-        'amount': 200,
-        'transaction_type': 'пополнение',
-    }
 
 
 @pytest.fixture()
 def transaction_data(request, debit_transaction, credit_transaction):
-    """Фикстура подстановки транзакций списания и пополнения."""
+    """Transaction data based on the requested transaction type.."""
     if request.param == 'debit':
         return debit_transaction
     elif request.param == 'credit':
@@ -61,67 +11,19 @@ def transaction_data(request, debit_transaction, credit_transaction):
 
 
 @pytest.fixture
-def create_transaction_link():
-    """Ссылка на создание транзакции."""
-    return '/transaction/create_transaction'
-
-
-@pytest.fixture
-def create_report_link():
-    """Ссылка на создание отчета."""
-    return '/transaction/create_report'
-
-
-@pytest.fixture
-def report_data():
-    """Данные для запроса отчета."""
-    return {
-        'start_date': (datetime.now(UTC) - timedelta(days=1)).isoformat(),
-        'end_date': (datetime.now(UTC) + timedelta(days=1)).isoformat(),
-    }
-
-
-@pytest.fixture
-def wrong_report_data():
-    """Некорректные данные для запроса отчета."""
-    return {
-        'start_date': (datetime.now(UTC) + timedelta(days=1)).isoformat(),
-        'end_date': (datetime.now(UTC) - timedelta(days=1)).isoformat(),
-    }
-
-
-@pytest.fixture
 async def token(client, auth_link, test_user):
-    """Токен существуюшего пользователя."""
+    """User token."""
     response = await client.post(auth_link, json=test_user)
     return response.json()['token']
 
 
-@pytest.fixture
-def face_embedding_link():
-    """Ссылка на формирование эмбеддинга."""
-    return '/face_verification/face_embedding'
-
-
 @pytest.fixture()
 def one_face_data():
-    """Фикстура с корректным изображением."""
+    """Correct image."""
     return {'link': 'src/tests/images/one_face.jpg'}
 
 
 @pytest.fixture()
 def many_faces_data():
-    """Фикстура с некорректным изображением."""
+    """Incorrect image."""
     return {'link': 'src/tests/images/many_faces.jpg'}
-
-
-@pytest.fixture
-def check_health_link():
-    """Фикстура со ссылкой на проверку готовности сервиса."""
-    return '/healthz/ready'
-
-
-@pytest.fixture
-def verify_link():
-    """Фикстура со ссылкой для загрузки фото."""
-    return '/healthz/ready'

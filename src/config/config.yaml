@@ -22,7 +22,7 @@ transaction_service:
 
 jaeger:
   service_name: "gateway"
-  host: "localhost"
+  host: "jaeger"
   port: 6831
   logging: True
   sampler_type: "const"

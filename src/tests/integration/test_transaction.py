@@ -17,7 +17,7 @@ async def test_create_transaction(
     transaction_data,
     token,
 ):
-    """Тест создания транзакции."""
+    """Transaction creation test."""
     response = await client.post(
         create_transaction_link,
         json=transaction_data,
@@ -45,7 +45,7 @@ async def test_create_report(
     report_data,
     token,
 ):
-    """Тест создания отчета."""
+    """Report creation test."""
     await client.post(
         create_transaction_link,
         json=debit_transaction,
@@ -76,7 +76,7 @@ async def test_create_report_wrong_dates(
     wrong_report_data,
     token,
 ):
-    """Тест создания отчета."""
+    """Report creation test with incorrect data."""
     await client.post(
         create_transaction_link,
         json=debit_transaction,
