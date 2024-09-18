@@ -16,6 +16,9 @@
     "redhat.telemetry.enabled": false,
     "terminal.integrated.defaultProfile.linux": "zsh",
     "cSpell.words": [
-        "healthz"
+        "Devcontainer",
+        "healthz",
+        "Meslo",
+        "mypy"
     ]
 }
