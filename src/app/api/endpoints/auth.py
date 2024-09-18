@@ -86,5 +86,5 @@ async def verify(
                 detail=FILENAME_ERROR,
             )
         await request.app.state.auth_client.verify(user_id=user_id, file=file)
-        scope.span.set_tag('result', 'изображение отправлено')
+        scope.span.set_tag('result', 'Photo was uploaded')
         return KafkaResponse
