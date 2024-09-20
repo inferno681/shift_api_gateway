@@ -237,53 +237,6 @@ def face_embedding_link():
     return '/face_verification/face_embedding'
 
 
-@pytest.fixture()
-def one_face_data():
-    """Фикстура с корректным изображением."""
-    return {'user_id': 1, 'link': 'src/tests/images/one_face.jpg'}
-
-
-@pytest.fixture()
-def many_faces_data():
-    """Фикстура с некорректным изображением."""
-    return {'user_id': 1, 'link': 'src/tests/images/many_faces.jpg'}
-
-
-@pytest.fixture
-def mock_post_one_face_response(one_face_data):
-    """
-    Фикстура для мока эмбеддингов.
-
-    Первые два ключа являются ответом на проверку токена.
-    """
-    mock_post = AsyncMock()
-    mock_post.return_value = Response(
-        status.HTTP_200_OK,
-        json={
-            'user_id': 1,
-            'is_token_valid': True,
-            'link': one_face_data['link'],
-            'embedding': [],
-        },
-    )
-    return mock_post
-
-
-@pytest.fixture
-def mock_post_many_faces_response():
-    """
-    Фикстура для мока ответа для некорректного изображения.
-
-    Первые два ключа являются ответом на проверку токена.
-    """
-    mock_post = AsyncMock()
-    mock_post.return_value = Response(
-        status.HTTP_400_BAD_REQUEST,
-        json={'user_id': 1, 'is_token_valid': True, 'detail': 'some_error'},
-    )
-    return mock_post
-
-
 @pytest.fixture
 def check_health_link():
     """Фикстура со ссылкой на проверку готовности сервиса."""

@@ -55,20 +55,12 @@ class _TransactionSettings(_SettingsModel):
     tags_metadata: dict[str, str]
 
 
-class _FaceVerificationSettings(_SettingsModel):
-    """Валидация настроек настроек сервиса верификации."""
-
-    base_url: str
-    tags_metadata: dict[str, str]
-
-
 class Settings(_SettingsModel):
     """Настройки сервиса."""
 
     service: _ServiceSettings
     auth_service: _AuthSettings
     transaction_service: _TransactionSettings
-    face_verification: _FaceVerificationSettings
 
 
 config = Settings.from_yaml('./src/config/config.yaml')

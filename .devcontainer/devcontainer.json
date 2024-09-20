@@ -40,8 +40,8 @@
     },
     "mounts": [
         "source=api_gateway_stakrotckii,target=/commandhistory,type=volume",
-        "source=${env:HOME}${env:USERPROFILE}/.kube,target=/usr/local/share/kube-localhost,type=bind",
-        "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached,readonly"
+        "source=/mnt/c/Users/infer/.kube,target=/usr/local/share/kube-localhost,type=bind",
+        "source=/mnt/c/Users/infer/.ssh,target=/root/.ssh,type=bind,consistency=cached,readonly"
     ],
     "remoteUser": "root"
 }

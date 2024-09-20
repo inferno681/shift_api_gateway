@@ -1,0 +1,42 @@
+Table user as U {
+  id serial [primary key]
+  login varchar(20) [unique, not null]
+  hashed_password varchar(60) [not null]
+  balance integer [not null, default: 0]
+  is_verified bool [default: False]
+}
+Table token [note: 'for Redis'] {
+  id serial [primary key]
+  user_id integer [not null, ref: - U.id]
+  token varchar(300)
+}
+Table transaction {
+  id serial [primary key]
+  user_id integer [not null]
+  amount integer [not null]
+  transaction_type transaction_type
+  created_at timestamp [default: 'now()']
+}
+Table report [note: 'for Redis']{
+  id serial [primary key]
+  user_id integer [not null]
+  start_date timestamp [not null]
+  end_date timestamp [not null]
+  debit integer
+  credit integer
+}
+
+Table embedding {
+  id serial [primary key]
+  user_id integer [not null, ref: - U.id]
+  embedding vector(128) [note: 'pgvector extension']
+}
+
+
+Enum transaction_type{
+  credit
+  debit
+}
+Ref: transaction.user_id > user.id
+Ref: report.user_id > user.id
+Ref report_transaction: report.id <> transaction.id

@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 import pytest
 from fastapi import status
 
@@ -8,8 +6,8 @@ from fastapi import status
 @pytest.mark.parametrize(
     'transaction_data',
     [
-        pytest.param('debit', id='debit_transaction'),
         pytest.param('credit', id='credit_transaction'),
+        pytest.param('debit', id='debit_transaction'),
     ],
     indirect=True,
 )
@@ -34,12 +32,7 @@ async def test_create_transaction(
         response_data['transaction_type']
         == transaction_data['transaction_type']
     )
-    assert response_data['amount'] == str(
-        Decimal(
-            transaction_data['amount'],
-        )
-        / Decimal('1.00'),
-    )
+    assert response_data['amount'] == transaction_data['amount']
 
 
 @pytest.mark.anyio
