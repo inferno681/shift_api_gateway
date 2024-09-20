@@ -15,13 +15,9 @@ async def test_create_transaction(
     client,
     create_transaction_link,
     transaction_data,
-    mock_client,
-    mock_post_transaction_create,
+    mock_post_check_token,
 ):
     """Тест создания транзакции."""
-    mock_client.return_value.__aenter__.return_value.post = (
-        mock_post_transaction_create
-    )
     response = await client.post(
         create_transaction_link,
         json=transaction_data,
@@ -41,13 +37,10 @@ async def test_create_report(
     client,
     create_report_link,
     report_data,
-    mock_client,
+    mock_post_check_token,
     mock_post_create_report,
 ):
     """Тест создания отчета."""
-    mock_client.return_value.__aenter__.return_value.post = (
-        mock_post_create_report
-    )
     response = await client.post(
         create_report_link,
         json=report_data,
@@ -67,13 +60,10 @@ async def test_create_report_wrong_dates(
     client,
     create_report_link,
     wrong_report_data,
-    mock_client,
+    mock_post_check_token,
     mock_post_create_wrong_report,
 ):
     """Тест создания отчета."""
-    mock_client.return_value.__aenter__.return_value.post = (
-        mock_post_create_wrong_report
-    )
     response = await client.post(
         create_report_link,
         json=wrong_report_data,

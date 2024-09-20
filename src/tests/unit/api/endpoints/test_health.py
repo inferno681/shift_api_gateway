@@ -6,11 +6,9 @@ from fastapi import status
 async def test_health_services(
     check_health_link,
     client,
-    mock_client,
     mock_get_health,
 ):
     """Тест проверки запущени ли сервис."""
-    mock_client.return_value.__aenter__.return_value.get = mock_get_health
     response = await client.get(check_health_link)
     assert response.status_code == status.HTTP_200_OK
     assert response.json()['is_ready'] is True
@@ -20,11 +18,9 @@ async def test_health_services(
 async def test_unhealth_services(
     check_health_link,
     client,
-    mock_client,
     mock_get_unhealth,
 ):
     """Тест проверки запущени ли сервис."""
-    mock_client.return_value.__aenter__.return_value.get = mock_get_unhealth
     response = await client.get(check_health_link)
     assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
     assert 'detail' in response.json()

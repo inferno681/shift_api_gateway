@@ -1,11 +1,11 @@
 [submodule "auth_service"]
 	path = auth_service
 	url = https://hub.mos.ru/shift-python/y2024/homeworks/vstakrotskij/auth_service.git
-	branch = feature-opentracing
+	branch = feature-redis
 [submodule "transaction_service"]
 	path = transaction_service
 	url = https://hub.mos.ru/shift-python/y2024/homeworks/vstakrotskij/transaction_service.git
-	branch = feature-opentracing
+	branch = feature-redis
 [submodule "face_verification_service"]
 	path = face_verification_service
 	url = https://hub.mos.ru/shift-python/y2024/homeworks/vstakrotskij/face_verification_service.git

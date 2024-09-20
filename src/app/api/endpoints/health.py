@@ -1,9 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from httpx import AsyncClient
+from fastapi import APIRouter, HTTPException, Request, status
 
 from app.api.schemes import ErrorSchema, IsReady
-from app.constants import HEALTH_LINK, SERVICE_UNAVAILABLE
-from app.service import get_client_auth, get_client_transaction
+from app.constants import SERVICE_UNAVAILABLE
 
 router = APIRouter()
 
@@ -12,23 +10,16 @@ router = APIRouter()
     '/healthz/ready',
     responses={200: {'model': IsReady}, 503: {'model': ErrorSchema}},
 )
-async def check_health(
-    client_auth: AsyncClient = Depends(get_client_auth),
-    client_transaction: AsyncClient = Depends(get_client_transaction),
-):
+async def check_health(request: Request):
     """Эндпоинт проверки запущен ли сервис."""
     unavailable_services = []
     try:
-        if (
-            await client_auth.get(HEALTH_LINK)
-        ).status_code != status.HTTP_200_OK:
+        if not await request.app.state.auth_client.check_health():
             unavailable_services.append('Сервис авторизации')
     except Exception:
         unavailable_services.append('Сервис авторизации')
     try:
-        if (
-            await client_transaction.get(HEALTH_LINK)
-        ).status_code != status.HTTP_200_OK:
+        if not await request.app.state.transaction_client.check_health():
             unavailable_services.append('Сервис транзакций')
     except Exception:
         unavailable_services.append('Сервис транзакций')

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "src"
-version = "0.3.0"
+version = "0.4.0"
 description = ""
 authors = ["Vasilii Stakrotckii <inferno681@gmail.com>"]
 readme = "README.md"
@@ -23,6 +23,7 @@ wemake-python-styleguide = "^0.19.2"
 types-pyyaml = "^6.0.12.20240724"
 asgi-lifespan = "^2.1.0"
 types-opentracing = "^2.4.10.6"
+pytest-httpx = "^0.30.0"
 
 [build-system]
 requires = ["poetry-core"]
