@@ -1,12 +1,12 @@
 [submodule "auth_service"]
 	path = auth_service
-	url = https://hub.mos.ru/shift-python/y2024/homeworks/vstakrotskij/auth_service.git
-	branch = feature-redis
+	url = https://github.com/inferno681/shift_auth_service.git
+	branch = main
 [submodule "transaction_service"]
 	path = transaction_service
-	url = https://hub.mos.ru/shift-python/y2024/homeworks/vstakrotskij/transaction_service.git
-	branch = feature-redis
+	url = https://github.com/inferno681/shift_transaction_service.git
+	branch = main
 [submodule "face_verification_service"]
 	path = face_verification_service
-	url = https://hub.mos.ru/shift-python/y2024/homeworks/vstakrotskij/face_verification_service.git
-	branch = feature-helm
+	url = https://github.com/inferno681/shift_face_verification_service.git
+	branch = main
