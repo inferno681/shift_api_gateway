@@ -310,3 +310,9 @@ def mock_get_unhealth():
         json={'detail': 'detail'},
     )
     return mock_get
+
+
+@pytest.fixture
+def verify_link():
+    """Фикстура со ссылкой для отправки фото."""
+    return '/verify'

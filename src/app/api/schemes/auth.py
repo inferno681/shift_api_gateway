@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field, PositiveInt
 
+from app.constants import KAFKA_RESPONSE
+
 
 class UserCreate(BaseModel):
     """Схема регистрации пользователя."""
@@ -28,3 +30,9 @@ class UserTokenCheck(BaseModel):
 
     user_id: PositiveInt | None = None
     is_token_valid: bool
+
+
+class KafkaResponse(BaseModel):
+    """Ответ на отправку фото."""
+
+    message: str = KAFKA_RESPONSE
