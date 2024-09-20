@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stakrotckii-api-gateway-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: stakrotckii
+      app.kubernetes.io/instance: api-gateway-abcxyz
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: stakrotckii
+        app.kubernetes.io/instance: api-gateway-abcxyz
+    spec:
+      containers:
+        - name: stakrotckii-api-gateway-pod-container
+          image: inferno681/api_gateway
+          volumeMounts:
+            - name: api-gateway-config-volume
+              mountPath: /app/src/config/config.yaml
+              subPath: config.yaml
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              memory: "750Mi"
+              cpu: "200m"
+            requests:
+              memory: "350Mi"
+              cpu: "100m"
+          readinessProbe:
+            httpGet:
+              path: /api/healthz/ready
+              port: 8000
+            failureThreshold: 10
+            initialDelaySeconds: 3
+            periodSeconds: 2
+      volumes:
+        - name: api-gateway-config-volume
+          configMap:
+            name: stakrotckii-api-gateway-configmap

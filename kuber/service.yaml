@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stakrotckii-api-gateway-service
+spec:
+  selector:
+    app.kubernetes.io/name: stakrotckii
+    app.kubernetes.io/instance: api-gateway-abcxyz
+  ports:
+    - port: 8000
+      targetPort: 8000

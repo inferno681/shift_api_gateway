@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stakrotckii-api-gateway-configmap
+data:
+  config.yaml: |
+    service:
+      title: "API Gateway"
+      description: "Единая точка входа в несколько сервисов."
+      host: "0.0.0.0"
+      port: 8000
+      debug: True
+      tags_metadata_health:
+        name: "Health"
+        description: "Проверка доступности сервиса"
+    auth_service:
+      base_url: "http://stakrotckii-auth-service-service:8000/api/"
+      tags_metadata:
+         name: "Auth service"
+         description: "Сервис авторизации"
+
+    transaction_service:
+      base_url: "http://stakrotckii-transaction-service-service:8000/api/"
+      tags_metadata:
+        name: "Transaction service"
+        description: "Сервис транзакций"
