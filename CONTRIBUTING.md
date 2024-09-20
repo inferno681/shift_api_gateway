@@ -59,3 +59,31 @@ flake8 src/
 ```
 
 </details>
+
+<details><summary><h1>Инструкция по запуску интеграционных тестов</h1></summary>
+
+- Для установки виртуального окружения с помощью Poetry нужно установить его через pip:
+```bash
+pip install poetry
+```
+- Для установки зависимостей выполните команду:
+
+```bash
+poetry install
+```
+
+- Для запуска сервисов выполните команду:
+
+```bash
+docker compose -f docker-compose-test.yaml up
+```
+
+- В файле src/config/config.yaml замените значения base_url для каждого сервиса на 127.0.0.1:(порт из docker-compose-test.yaml).
+
+- Для запуска интеграционных тестов выполните команду:
+
+```bash
+pytest src/tests/integration
+```
+
+</details>

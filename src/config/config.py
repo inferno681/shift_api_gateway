@@ -38,6 +38,7 @@ class _ServiceSettings(_SettingsModel):
     host: str
     port: int
     debug: bool
+    tags_metadata_health: dict[str, str]
 
 
 class _AuthSettings(_SettingsModel):
