@@ -1,0 +1,99 @@
+# Default values for api-gateway-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: inferno681/api_gateway
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8000
+
+resources:
+  limits:
+    memory: "500Mi"
+    cpu: "200m"
+  requests:
+    memory: "350Mi"
+    cpu: "100m"
+
+readinessProbe:
+  httpGet:
+    path: /api/healthz/ready
+    port: 8000
+  failureThreshold: 10
+  initialDelaySeconds: 3
+  periodSeconds: 2
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts:
+  - name: api-gateway-config-volume
+    mountPath: /app/src/config/config.yaml
+    subPath: config.yaml
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+app:
+  servicePort: 8000
+  data:
+    config.yaml: |
+      service:
+        title: "API Gateway"
+        description: "Единая точка входа в несколько сервисов."
+        host: "0.0.0.0"
+        port: 8000
+        debug: True
+        tags_metadata_health:
+          name: "Health"
+          description: "Проверка доступности сервиса"
+
+      auth_service:
+        base_url: "http://stakrotckii-auth-service-service:8000/api/"
+        tags_metadata:
+          name: "Auth service"
+          description: "Сервис авторизации"
+
+      transaction_service:
+        base_url: "http://stakrotckii-transaction-service-service:8000/api/"
+        tags_metadata:
+          name: "Transaction service"
+          description: "Сервис транзакций"
