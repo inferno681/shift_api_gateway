@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: inferno681/api_gateway
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -97,3 +97,11 @@ app:
         tags_metadata:
           name: "Transaction service"
           description: "Сервис транзакций"
+
+      jaeger:
+        service_name: "stakrotckii_gateway"
+        host: "infra-jaeger-agent"
+        port: 5775
+        logging: True
+        sampler_type: "const"
+        sampler_param: 1

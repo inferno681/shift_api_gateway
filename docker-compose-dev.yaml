@@ -1,5 +1,6 @@
 volumes:
   photo_storage:
+  db_data:
 
 services:
 
@@ -34,6 +35,18 @@ services:
       timeout: 5s
       retries: 5
 
+  db:
+    container_name: db
+    image: inferno681/pgvector
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data/
   auth_service:
     build: ./auth_service
     ports:
@@ -65,3 +78,9 @@ services:
         condition: service_started
     volumes:
       - photo_storage:/app/photos
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"

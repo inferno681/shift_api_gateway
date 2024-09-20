@@ -55,12 +55,24 @@ class _TransactionSettings(_SettingsModel):
     tags_metadata: dict[str, str]
 
 
+class _JaegerSettings(_SettingsModel):
+    """Валидация настроек настроек jaeger."""
+
+    service_name: str
+    host: str
+    port: int
+    logging: bool
+    sampler_type: str
+    sampler_param: float | int
+
+
 class Settings(_SettingsModel):
     """Настройки сервиса."""
 
     service: _ServiceSettings
     auth_service: _AuthSettings
     transaction_service: _TransactionSettings
+    jaeger: _JaegerSettings
 
 
 config = Settings.from_yaml('./src/config/config.yaml')
