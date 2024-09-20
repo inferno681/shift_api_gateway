@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION update_user_balance()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Обработка вставки транзакции
+    -- Handling transaction insertion
     IF TG_OP = 'INSERT' THEN
         IF NEW.transaction_type = 'credit' THEN
             UPDATE "user"
@@ -14,9 +14,9 @@ BEGIN
         END IF;
     END IF;
 
-    -- Обработка обновления транзакции
+    -- Handling transaction update
     IF TG_OP = 'UPDATE' THEN
-        -- Если изменилось поле amount
+        -- If the amount field has changed
         IF NEW.transaction_type = OLD.transaction_type THEN
             IF NEW.transaction_type = 'credit' THEN
                 UPDATE "user"
@@ -28,7 +28,7 @@ BEGIN
                 WHERE id = NEW.user_id;
             END IF;
         ELSE
-            -- Если изменился тип транзакции
+            -- If the transaction type has changed
             IF OLD.transaction_type = 'credit' THEN
                 UPDATE "user"
                 SET balance = balance - OLD.amount
@@ -51,7 +51,7 @@ BEGIN
         END IF;
     END IF;
 
-    -- Обработка удаления транзакции
+    -- Handling transaction deletion
     IF TG_OP = 'DELETE' THEN
         IF OLD.transaction_type = 'credit' THEN
             UPDATE "user"
@@ -68,7 +68,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Триггер для вставки и обновления транзакции
+-- Trigger for inserting and updating transactions
 CREATE TRIGGER trigger_update_balance
 AFTER INSERT OR UPDATE OR DELETE ON "transaction"
 FOR EACH ROW

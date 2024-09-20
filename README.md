@@ -1,27 +1,25 @@
-# API gateway
+# API Gateway
 
-Единая точка входа в остальные сервисы.
+A single entry point to other services.
 
-## Реализованы следующие возможности
+## Implemented Features
 
+### User Registration
 
+Identical in signature to the registration method in the Auth service. Proxies the request to the registration method in the Auth service.
 
-### Регистрация пользователя
+### User Authentication
 
-По своей сигнатуре идентичен методу регистрации в сервисе Auth service. Проксирует запрос в метод регистрации в сервисе Auth service.
+Identical in signature to the authentication method in the Auth service. Proxies the request to the authentication method in the Auth service.
 
-### Авторизация пользователя
+### Transaction Creation
 
-По своей сигнатуре идентичен методу авторизации в сервисе Auth service. Проксирует запрос в метод авторизации в сервисе Auth service.
+Identical in signature to the transaction creation method in the Transactions service. Before forwarding  the request to the transaction creation method, the Transactions service verifies the validity of the provided JWT token using the JWT token validation method in the Auth service.
 
-### Создание транзакции
+### Getting User Transaction Report
 
-По своей сигнатуре идентичен методу создания транзакции в сервисе Transactions. Перед проксированием запроса в метод создания транзакции Transactions проверяет действительность предоставленного пользователем JWT-токена с помощью метода проверки JWT-токена сервиса Auth service.
+Identical in signature to the transaction report retrieval method in the Transactions service. Before forwarding  the request to the transaction report retrieval method, the Transactions service verifies the validity of the provided JWT token using the JWT token validation method in the Auth service.
 
-### Получение отчета по транзакциям пользователя
+### Vector Generation
 
-По своей сигнатуре идентичен методу получения выгрузки транзакций в сервисе Transactions. Перед проксированием запроса в метод получения выгрузки транзакций Transactions проверяет действительность предоставленного пользователем JWT-токена с помощью метода проверки JWT-токена сервиса Auth service.
-
-### Генерация вектора
-
-По своей сигнатуре идентичен методу генерации вектора в сервисе Face Verification. Перед проксированием запроса в метод генерации вектора Face Verification проверяет действительность предоставленного пользователем JWT-токена с помощью метода проверки JWT-токена сервиса Auth service.
+Identical in signature to the vector generation method in the Face Verification service. Before forwarding the request to the vector generation method, the Face Verification service verifies the validity of the provided JWT token using the JWT token validation method in the Auth service.

@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class _SettingsModel(BaseSettings):
-    """Базовые настройки."""
+    """Base settings."""
 
     @classmethod
     def from_yaml(cls, config_path: str) -> '_SettingsModel':
@@ -26,12 +26,12 @@ class _SettingsModel(BaseSettings):
         env_settings,
         file_secret_settings,
     ):
-        """Определяем приоритет использования переменных."""
+        """Variables priority."""
         return init_settings, env_settings, file_secret_settings
 
 
 class _ServiceSettings(_SettingsModel):
-    """Валидация настроек сервиса из файла YAML."""
+    """Service settings validation."""
 
     title: str
     description: str
@@ -42,21 +42,21 @@ class _ServiceSettings(_SettingsModel):
 
 
 class _AuthSettings(_SettingsModel):
-    """Валидация настроек настроек сервиса авторизации."""
+    """Auth service settings validation."""
 
     base_url: str
     tags_metadata: dict[str, str]
 
 
 class _TransactionSettings(_SettingsModel):
-    """Валидация настроек настроек сервиса транзакций."""
+    """Transaction service setting validation."""
 
     base_url: str
     tags_metadata: dict[str, str]
 
 
 class _JaegerSettings(_SettingsModel):
-    """Валидация настроек настроек jaeger."""
+    """Jaeger settings validation."""
 
     service_name: str
     host: str
@@ -67,7 +67,7 @@ class _JaegerSettings(_SettingsModel):
 
 
 class Settings(_SettingsModel):
-    """Настройки сервиса."""
+    """Service settings."""
 
     service: _ServiceSettings
     auth_service: _AuthSettings

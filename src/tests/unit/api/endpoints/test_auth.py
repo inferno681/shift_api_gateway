@@ -16,7 +16,7 @@ async def test_registration_success(
     test_user,
     reg_auth_links,
 ):
-    """Тест успешной регистрации и авторизации."""
+    """Registration and auth test."""
     response = await client.post(url=reg_auth_links, json=test_user)
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {'token': 'token'}
@@ -29,7 +29,7 @@ async def test_registration_existing_user(
     mock_post_registration_failure,
     registration_link,
 ):
-    """Тест регистрации уже существующего пользователя."""
+    """Existing user registration test."""
     await client.post(registration_link, json=test_user)
     response = await client.post(registration_link, json=test_user)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -43,7 +43,7 @@ async def test_wrong_login(
     wrong_user_data,
     mock_post_wrong_user_data,
 ):
-    """Тест аутентификации пользователя с некорректными данными."""
+    """Auth test with incorrect data."""
     response = await client.post(auth_link, json=wrong_user_data)
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert 'detail' in response.json()

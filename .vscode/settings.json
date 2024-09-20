@@ -14,5 +14,11 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "redhat.telemetry.enabled": false,
-    "terminal.integrated.defaultProfile.linux": "zsh"
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "cSpell.words": [
+        "Devcontainer",
+        "healthz",
+        "Meslo",
+        "mypy"
+    ]
 }

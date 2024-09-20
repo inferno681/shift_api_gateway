@@ -4,35 +4,35 @@ from app.constants import KAFKA_RESPONSE
 
 
 class UserCreate(BaseModel):
-    """Схема регистрации пользователя."""
+    """User registration scheme."""
 
     login: str = Field(
-        description='Логин',
+        description='Login',
         min_length=3,
         max_length=20,  # noqa:WPS432
         pattern='^[a-zA-Z0-9._-]+$',
     )
     password: str = Field(
-        description='Пароль',
+        description='Password',
         min_length=6,
         max_length=100,
     )
 
 
 class UserToken(BaseModel):
-    """Схема отдачи токена."""
+    """Token sending scheme."""
 
     token: str | None = None
 
 
 class UserTokenCheck(BaseModel):
-    """Схема проверки токена."""
+    """Token check scheme."""
 
     user_id: PositiveInt | None = None
     is_token_valid: bool
 
 
 class KafkaResponse(BaseModel):
-    """Ответ на отправку фото."""
+    """Photo sending response."""
 
     message: str = KAFKA_RESPONSE

@@ -29,7 +29,7 @@ async def create_transaction(
     request: Request,
     user_id: int = Depends(check_token),
 ):
-    """Эндпоинт создания транзакции."""
+    """Transaction creation endpoint."""
     with global_tracer().start_active_span('create_transaction') as scope:
         request_data = transaction.model_dump()
         request_data['user_id'] = user_id
@@ -57,7 +57,7 @@ async def create_report(
     request: Request,
     user_id: int = Depends(check_token),
 ):
-    """Эндпоинт создания отчета."""
+    """Report creation endpoint."""
     with global_tracer().start_active_span('create_report') as scope:
         request_data = jsonable_encoder(report_data)
         request_data['user_id'] = user_id

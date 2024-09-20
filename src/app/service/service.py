@@ -19,21 +19,21 @@ header_scheme = APIKeyHeader(name='Authorization')
 
 
 class ServiceClient:
-    """Базовый клиент для отправки запросов."""
+    """Base request client."""
 
     def __init__(self, base_url: str):
-        """Инициализация клиента."""
+        """Client initialization."""
         self.client = AsyncClient()
         self.base_url = base_url
 
     async def check_health(self) -> bool:
-        """Метод выполнения GET запроса для проверки готовности сервиса."""
+        """Health check request method."""
         url = f'{self.base_url}{HEALTH_LINK}'
         response = await self.client.get(url)
         return response.status_code == status.HTTP_200_OK
 
     async def post(self, path: str, **kwargs):
-        """Метод выполнения POST запроса с добавлением хэдеров трейсинга."""
+        """POST request with tracing headers method."""
         url = f'{self.base_url}{path}'
         headers = kwargs.get('headers', {})
 
@@ -47,27 +47,27 @@ class ServiceClient:
         return response.json(), response.status_code
 
     async def aclose(self):
-        """Метод закрытия клиента."""
+        """Client closing method."""
         await self.client.aclose()
 
 
 class AuthServiceClient(ServiceClient):
-    """Клиент для запросов к сервису авторизации."""
+    """Auth service requests client."""
 
     async def registration(self, data):
-        """Запрос регистрации пользователя."""
+        """Registration request."""
         return await self.post(REGISTRATION_LINK, json=data)
 
     async def login(self, data):
-        """Запрос аутентификации пользователя."""
+        """Auth request."""
         return await self.post(AUTH_LINK, json=data)
 
     async def check_token(self, token: str) -> int | None:
-        """Запрос для проверки токена."""
+        """Token check request."""
         return await self.post(CHECK_TOKEN_LINK, json={'token': token})
 
     async def verify(self, user_id: int, file: UploadFile):
-        """Запрос загрузки фото для верификации."""
+        """Photo upload request."""
         return await self.post(
             PHOTO_UPLOAD_LINK,
             data={'user_id': user_id},
@@ -78,14 +78,14 @@ class AuthServiceClient(ServiceClient):
 
 
 class TransactionServiceClient(ServiceClient):
-    """Клиент для запросов к сервису авторизации."""
+    """Transaction service requests client."""
 
     async def create_transaction(self, data):
-        """Запрос создания транзакции."""
+        """Transaction creation request."""
         return await self.post(CREATE_TRANSACTION_LINK, json=data)
 
     async def create_report(self, data):
-        """Запрос создания отчета."""
+        """Report creation request."""
         return await self.post(CREATE_REPORT_LINK, json=data)
 
 
@@ -93,7 +93,7 @@ async def check_token(
     request: Request,
     token: str = Depends(header_scheme),
 ) -> int | None:
-    """Проверка токена пользователя."""
+    """Token check function."""
     with global_tracer().start_active_span('check_token') as scope:
         scope.span.set_tag('token', token[:10] + '...')
         response_data, status_code = (

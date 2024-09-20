@@ -31,7 +31,7 @@ async def registration(
     user: UserCreate,
     request: Request,
 ):
-    """Эндпоинт регистрации пользователя."""
+    """User registration endpoint."""
     with global_tracer().start_active_span('registration') as scope:
         data = await request.json()
         scope.span.set_tag('registration_data', str(data))
@@ -54,7 +54,7 @@ async def registration(
     responses={404: {'model': ErrorSchema}},
 )
 async def authentication(user: UserCreate, request: Request):
-    """Эндпоинт аутентификации пользователя."""
+    """User authentication endpoint."""
     with global_tracer().start_active_span('login') as scope:
         data = await request.json()
         scope.span.set_tag('login_data', str(data))
@@ -77,7 +77,7 @@ async def verify(
     user_id: int = Depends(check_token),
     file: UploadFile = File(),
 ):
-    """Эндпоинт загрузки фотографии."""
+    """Photo upload endpoint."""
     with global_tracer().start_active_span('photo_upload') as scope:
         if file.filename is None:
             scope.span.set_tag('error', FILENAME_ERROR)
@@ -86,5 +86,5 @@ async def verify(
                 detail=FILENAME_ERROR,
             )
         await request.app.state.auth_client.verify(user_id=user_id, file=file)
-        scope.span.set_tag('result', 'изображение отправлено')
+        scope.span.set_tag('result', 'Photo was uploaded')
         return KafkaResponse

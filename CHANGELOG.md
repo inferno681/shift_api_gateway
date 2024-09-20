@@ -1,28 +1,28 @@
-# История версий
+# Version History
 
 ## 0.1.0
-### Добавлено
-- Добалена базовая документация к проекту
-- Добавлен API
+### Added
+- Basic project documentation added
+- API added
 
 ## 0.2.0
-### Добавлено
-- Добавлен Dockerfile
-- В CI добавлен шаг со сборкой контейнера и загрузкой на dockerhub
+### Added
+- Dockerfile added
+- CI step added for container build and push to DockerHub
 
 ## 0.2.1
-### Добавлено
-- Добавлен docker compose
+### Added
+- Docker Compose added
 
 ## 0.2.2
-### Добавлено
-- Добавлен Health check
+### Added
+- Health check added
 
 ## 0.3.0
-### Добавлено
-- Добавлены манифесты для запуска в кубернетис
-- Добавлены чарты для Helm
+### Added
+- Kubernetes manifests added
+- Helm charts added
 
 ## 0.4.0
-### Изменено
-- Произведен рефакторинг кода
+### Changed
+- Code refactoring performed
