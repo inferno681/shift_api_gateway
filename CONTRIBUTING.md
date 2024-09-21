@@ -19,7 +19,7 @@ To make changes to the repository, you need to work within a devcontainer.
 
 - Clone the repository and navigate into it.
 ```bash
-git clone git@hub.mos.ru:shift-python/y2024/homeworks/vstakrotskij/api_gateway.git
+git clone git@github.com:inferno681/shift_api_gateway.git
 ```
 - Create a .env file in the root directory of the project with environment variables:
 ```
