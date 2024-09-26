@@ -41,6 +41,8 @@ jobs:
       options: --privileged
   steps:
     - uses: actions/checkout@v4
+      with:
+          submodules: true
     - name: Set up Docker Compose
       run: |
         docker compose -f docker-compose-test.yaml up -d --build
