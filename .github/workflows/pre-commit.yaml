@@ -47,7 +47,9 @@ jobs:
       run: |
         docker compose -f docker-compose-test.yaml up -d --build
     - name: Run Pytest
-      run: docker compose -f docker-compose-test.yaml exec api_gateway pytest --cov --cov-fail-under=90 --cov-report term-missing
+      run: |
+        sleep 5
+        docker compose -f docker-compose-test.yaml exec api_gateway pytest --cov --cov-fail-under=90 --cov-report term-missing
     - name: Tear down Docker Compose
       if: always()
       run: docker compose -f docker-compose-test.yaml down

@@ -22,6 +22,7 @@ jobs:
           docker compose -f docker-compose-test.yaml up -d --build
       - name: Run Pytest
         run: |
+          sleep 5
           docker compose -f docker-compose-test.yaml exec api_gateway pytest --cov --cov-fail-under=90 --cov-report term-missing --cov-report xml:coverage.xml
           docker cp $(docker compose -f docker-compose-test.yaml ps -q api_gateway):/app/coverage.xml ./coverage.xml
       - name: Tear down Docker Compose
