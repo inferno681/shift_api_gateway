@@ -1,3 +1,5 @@
+[![main](https://github.com/inferno681/shift_api_gateway/actions/workflows/main.yaml/badge.svg?branch=main)](https://github.com/inferno681/shift_api_gateway/actions/workflows/main.yaml)
+[![codecov](https://codecov.io/gh/inferno681/shift_api_gateway/graph/badge.svg?token=SEDW3ZOWAU)](https://codecov.io/gh/inferno681/shift_api_gateway)
 # API Gateway
 
 A single entry point to other services.

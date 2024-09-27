@@ -1,5 +1,6 @@
-import pytest
 from datetime import UTC, datetime, timedelta
+
+import pytest
 from asgi_lifespan import LifespanManager
 from httpx import ASGITransport, AsyncClient
 
